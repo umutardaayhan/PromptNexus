@@ -56,19 +56,23 @@ const SYSTEM_INSTRUCTION = `
     5. KARMAŞIKLIK SEVİYESİNİ GÖZ ARDI ETME! Kullanıcının belirttiği 1-10 arası seviyeye göre promptun uzunluğu ve detayını kesinlikle ayarla.
     6. HEDEF MODEL ÖZELLEŞTİRMESİ:
        - EĞER Hedef Model "Claude" veya "GPT-4" ise ve konu web/yazılım ise:
-         Promptun sonuna MUTLAKA teknik bir "Implementation Plan" (Uygulama Planı) ekle.
+         Promptun sonuna teknik bir "Implementation Plan" (Uygulama Planı) ekle.
          Şunları zorunlu kıl: 
          a) Modern Tech Stack (Next.js, Tailwind, vb.)
          b) Renk kodları (Hex codes) ve Tipografi.
-         c) "Artifact" kullanımı (Claude için) veya tam kod blokları.
+         c) "Artifact" kullanımı (Claude için).
          d) Çıktının sadece metin değil, "Kopyalanabilir Kod" odaklı olmasını emret.
+         
+         KESİNLİKLE YASAK: Kod blokları, backtickler, markdown formatı. Sadece metinsel talimatlar ver.
+         
        - EĞER Hedef Model "Cursor", "Antigravity", "KiloCode", "GitHubCopilot" veya "Windsurf" ise:
          Bu araçlar kod editörü/agent IDE'lerdir. Prompt şunları içermeli:
          a) Proje yapısı ve dosya organizasyonu önerileri
          b) Kodlama standartları ve best practices
-         c) Terminal komutları ve kurulum talimatları
-         d) Debugging ve test stratejileri
-         e) Context-aware kod önerileri için gerekli bağlam bilgisi
+         c) Debugging ve test stratejileri
+         d) Context-aware kod önerileri için gerekli bağlam bilgisi
+         
+         KESİNLİKLE YASAK: Terminal komutları, kod blokları, backtickler. Sadece metinsel talimatlar ver.
 
     ---
     DÖNÜŞÜM ÖRNEĞİ - SEVİYE 2 (Basit):
@@ -165,6 +169,11 @@ const SYSTEM_INSTRUCTION = `
        - Tırnak işaretleri kullanma
     9. YAPISAL OL: Başlıklar, maddeler, kurallar kullan
     10. ROL BELİRLE AMA SOHBET ETME: Rol tanımla ama o rolle konuşma
+    11. KESİNLİKLE KOD BLOKLARI KULLANMA: 
+       - YASAK: Markdown kod blokları (3 backtick ile çevrili kod)
+       - YASAK: Inline kod backtickleri (tek backtick ile çevrili metin)
+       - YASAK: Terminal komutları (npm install, git clone vb.)
+       - SADECE METİNSEL TALİMATLAR: Kod yazdırılacaksa bile, sadece metin olarak talimat ver. Örnek: "Bir React bileşeni oluştur" yerine "React bileşeni kodunu yaz" değil, "React bileşeni oluşturmasını iste" şeklinde metinsel talimat ver.
 
     ŞİMDİ: Kullanıcının isteği ve karmaşıklık seviyesine göre BU KALİTEDE bir prompt üret.
     ÇIKTI FORMATI: Sadece ve sadece ürettiğin prompt metnini ver. Sohbet etme, giriş cümlesi (İşte promptunuz vb.) yazma.
@@ -183,6 +192,52 @@ export const createGeminiClient = (apiKey) => {
 };
 
 /**
+ * Rastgele varyasyon değerleri üretir
+ * @param {string} topic - Konu
+ * @returns {Object} Rastgele varyasyon değerleri
+ */
+const generateRandomVariations = (topic) => {
+  // Konu bazlı olası varyasyonlar
+  const variations = {
+    angle: [
+      'yeni başlayanlar için', 'uzmanlar için', 'eleştirel bakış açısıyla', 
+      'tarihsel perspektiften', 'gelecek odaklı', 'pratik uygulamalı',
+      'karşılaştırmalı analiz', 'derinlemesine inceleme', 'hızlı özet',
+      'etik perspektiften', 'ekonomik boyutuyla', 'sosyal etkileriyle'
+    ],
+    focus: [
+      'temel prensipler', 'gelişmiş teknikler', 'güncel trendler',
+      'en iyi uygulamalar', 'sık karşılaşılan hatalar', 'inovasyonlar',
+      'vaka çalışmaları', 'stratejik planlama', 'operasyonel detaylar',
+      'pazar analizi', 'kullanıcı deneyimi', 'teknik altyapı'
+    ],
+    perspective: [
+      'optimist', 'realist', 'eleştirel', 'yapıcı', 'tarafsız',
+      'teşvik edici', 'uyarıcı', 'ilham verici', 'pragmatik',
+      'vizyoner', 'analitik', 'duygusal'
+    ],
+    scope: [
+      'kapsamlı', 'odaklanmış', 'genel bakış', 'detaylı',
+      'özet', 'derinlemesine', 'geniş perspektifli', 'spesifik'
+    ]
+  };
+
+  // Rastgele seçimler
+  const randomAngle = variations.angle[Math.floor(Math.random() * variations.angle.length)];
+  const randomFocus = variations.focus[Math.floor(Math.random() * variations.focus.length)];
+  const randomPerspective = variations.perspective[Math.floor(Math.random() * variations.perspective.length)];
+  const randomScope = variations.scope[Math.floor(Math.random() * variations.scope.length)];
+
+  return {
+    angle: randomAngle,
+    focus: randomFocus,
+    perspective: randomPerspective,
+    scope: randomScope,
+    combined: `${randomScope} bir yaklaşımla ${topic} konusunda ${randomAngle} ${randomFocus} üzerine odaklanan, ${randomPerspective} bir bakış açısı sunan`
+  };
+};
+
+/**
  * Prompt oluşturma isteği gönderir
  * @param {Object} params - İstek parametreleri
  * @param {string} params.apiKey - Gemini API anahtarı
@@ -190,9 +245,11 @@ export const createGeminiClient = (apiKey) => {
  * @param {number} params.complexity - Karmaşıklık seviyesi (1-10)
  * @param {string} params.targetAI - Hedef AI modeli (ChatGPT, Midjourney, Claude)
  * @param {string} params.outputLanguage - Çıktı dili (Türkçe, English, vb.)
+ * @param {Function} params.onRateLimitUpdate - Rate limit bilgisini güncelleyen callback
+ * @param {boolean} params.isRandomized - Rastgele varyasyonlar eklensin mi
  * @returns {Promise<string>} Oluşturulan prompt
  */
-export const generatePrompt = async ({ apiKey, topic, complexity, targetAI, outputLanguage = 'Türkçe', notebookLMMode }) => {
+export const generatePrompt = async ({ apiKey, topic, complexity, targetAI, outputLanguage = 'Türkçe', projectType = 'webApp', notebookLMMode, isRandomized = false }) => {
   try {
     const genAI = createGeminiClient(apiKey);
     
@@ -206,12 +263,23 @@ export const generatePrompt = async ({ apiKey, topic, complexity, targetAI, outp
       systemInstruction: systemInstruction
     });
 
+    // Rastgele varyasyonlar üret (eğer isRandomized true ise)
+    let randomVariations = null;
+    let processedTopic = topic;
+    
+    if (isRandomized || topic.includes('[RANDOMIZED]')) {
+      // [RANDOMIZED] etiketini temizle
+      const cleanTopic = topic.replace(/\[RANDOMIZED\]\s*/gi, '').trim();
+      randomVariations = generateRandomVariations(cleanTopic);
+      processedTopic = cleanTopic;
+    }
+
     // Kullanıcı isteğini formatla
     const userPrompt = targetAI === 'NotebookLM'
-      ? formatNotebookLMRequest(topic, complexity, notebookLMMode, outputLanguage)
-      : formatUserRequest(topic, complexity, targetAI, outputLanguage);
+      ? formatNotebookLMRequest(processedTopic, complexity, notebookLMMode, outputLanguage)
+      : formatUserRequest(processedTopic, complexity, targetAI, outputLanguage, projectType, randomVariations);
 
-    console.log('API isteği gönderiliyor...', { topic, complexity, targetAI });
+    console.log('API isteği gönderiliyor...', { topic: processedTopic, complexity, targetAI, isRandomized: !!randomVariations });
     
     const result = await model.generateContent({
       contents: [{ role: 'user', parts: [{ text: userPrompt }] }],
@@ -240,9 +308,10 @@ export const generatePrompt = async ({ apiKey, topic, complexity, targetAI, outp
  * @param {number} complexity - Karmaşıklık seviyesi (1-10)
  * @param {string} targetAI - Hedef AI modeli
  * @param {string} outputLanguage - Çıktı dili
+ * @param {Object} randomVariations - Rastgele varyasyon değerleri (opsiyonel)
  * @returns {string} Formatlanmış istek
  */
-const formatUserRequest = (topic, complexity, targetAI, outputLanguage = 'English') => {
+const formatUserRequest = (topic, complexity, targetAI, outputLanguage = 'English', projectType = 'webApp', randomVariations = null) => {
   const complexityDescription = getComplexityDescription(complexity);
   
   let complexityDirective = '';
@@ -282,10 +351,30 @@ KARMAŞIKLIK SEVİYESİ 9-10 (UZMAN) - BU ÇOK ÖNEMLİ:
 - Örnek uzunluk: 1000-1400 kelime (1500+ değil)`;
   }
   
+  // Rastgele varyasyonlar varsa, kullanıcı isteğine ekle
+  const variationDirective = randomVariations ? `
+RASTGELE VARYASYONLAR (BU VARYASYONLARI PROMPTA ENTEGRE ET):
+- Yaklaşım Açısı: ${randomVariations.angle}
+- Odak Noktası: ${randomVariations.focus}
+- Perspektif: ${randomVariations.perspective}
+- Kapsam: ${randomVariations.scope}
+- Tam Açıklama: ${randomVariations.combined}
+
+ÖNEMLİ: Yukarıdaki varyasyonları promptun içine entegre et. Örneğin AMAÇ kısmında "[RANDOMIZED] biyoteknoloji" gibi bir yer tutucu varsa, bunu "${randomVariations.scope} bir yaklaşımla biyoteknoloji konusunda ${randomVariations.angle} ${randomVariations.focus} üzerine odaklanan, ${randomVariations.perspective} bir bakış açısı sunan" şeklinde doldur.
+` : '';
+
+  // Proje türüne göre yönlendirme ekle
+  const projectTypeGuidance = getProjectTypeGuidance(projectType);
+
   return `Konu: ${topic}
+Proje Türü: ${projectType}
 Karmaşıklık: ${complexity}/10 - ${complexityDescription}
 Hedef AI: ${targetAI}
 Çıktı Dili: ${outputLanguage}
+${variationDirective}
+
+PROJE TÜRÜ YÖNLENDİRMESİ:
+${projectTypeGuidance}
 
 ${complexityDirective}
 
@@ -298,13 +387,18 @@ KESİNLİKLE UYULMASI GEREKEN KURALLAR:
    - Eğer 7-8 ise DETAYLI
    - Eğir 9-10 ise ÇOK DETAYLI ve AKADEMİK olsun.
 
-2. KESİNLİKLE SOHBET ETME - BU ÇOK ÖNEMLİ:
+2. EĞER RASTGELE VARYASYONLAR VERİLDİYSE:
+   - Prompt içindeki [RANDOMIZED] veya benzeri yer tutucuları DOLDUR
+   - Varyasyonları promptun doğal bir parçası olarak entegre et
+   - Örneğin: "[RANDOMIZED] biyoteknoloji" → "${randomVariations ? randomVariations.scope + ' bir yaklaşımla biyoteknoloji konusunda ' + randomVariations.angle + ' ' + randomVariations.focus + ' üzerine odaklanan, ' + randomVariations.perspective + ' bir bakış açısı sunan' : 'kapsamlı bir yaklaşımla biyoteknoloji konusunda yeni başlayanlar için temel prensipler üzerine odaklanan, optimist bir bakış açısı sunan'}"
+
+3. KESİNLİKLE SOHBET ETME - BU ÇOK ÖNEMLİ:
    - Hedef AI'ya hitap ETME (örn: "KiloCode, bu projeyi yap...")
    - Emir kipi kullanma (örn: "Hazır ol", "Şunu yap", "İşte promptun")
    - Giriş/sonuç cümleleri ekleme
    - Sadece YAPISAL prompt içeriği üret
 
-3. ÇIKTI SADECE PROMPT OLSUN:
+4. ÇIKTI SADECE PROMPT OLSUN:
    - Başında "Prompt:" yazma
    - Sonunda açıklama yapma
    - Tırnak işaretleri kullanma
@@ -400,6 +494,100 @@ const cleanPromptOutput = (text, targetAI) => {
  * @param {number} complexity - Karmaşıklık seviyesi (1-10)
  * @returns {string} Açıklama
  */
+/**
+ * Proje türüne göre yönlendirme metni döndürür
+ * @param {string} projectType - Proje türü
+ * @returns {string} Yönlendirme metni
+ */
+const getProjectTypeGuidance = (projectType) => {
+  const guidanceMap = {
+    webApp: `Bu bir Web Uygulaması projesidir. Prompt oluştururken şunlara dikkat et:
+- Modern web teknolojileri (React, Vue, Angular, Next.js vb.)
+- Responsive tasarım ve mobil uyumluluk
+- SEO optimizasyonu ve erişilebilirlik
+- Frontend ve backend entegrasyonu
+- Güvenlik best practices (XSS, CSRF, vb.)`,
+
+    mobileGame: `Bu bir Mobil Oyun projesidir. Prompt oluştururken şunlara dikkat et:
+- Oyun mekaniği ve oynanabilirlik
+- Mobil UX/UI tasarım ilkeleri
+- Performans optimizasyonu (FPS, bellek yönetimi)
+- Dokunmatik kontroller ve gesture'lar
+- Platform spesifik özellikler (iOS/Android)`,
+
+    dataAnalysis: `Bu bir Veri Analizi projesidir. Prompt oluştururken şunlara dikkat et:
+- Veri işleme ve temizleme teknikleri
+- İstatistiksel analiz ve modelleme
+- Veri görselleştirme (grafikler, dashboardlar)
+- Python/R gibi analiz araçları
+- Büyük veri teknolojileri (opsiyonel)`,
+
+    desktopApp: `Bu bir Masaüstü Uygulaması projesidir. Prompt oluştururken şunlara dikkat et:
+- Cross-platform framework'ler (Electron, Tauri, Flutter)
+- Native performans optimizasyonu
+- Dosya sistemi ve OS entegrasyonu
+- Offline çalışma yetenekleri
+- Dağıtım ve güncelleme mekanizmaları`,
+
+    api: `Bu bir API / Backend projesidir. Prompt oluştururken şunlara dikkat et:
+- RESTful veya GraphQL API tasarımı
+- Authentication ve authorization (JWT, OAuth)
+- Veritabanı tasarımı ve ORM kullanımı
+- API dokümantasyonu (OpenAPI/Swagger)
+- Rate limiting, caching ve güvenlik`,
+
+    aiMl: `Bu bir AI / Makine Öğrenmesi projesidir. Prompt oluştururken şunlara dikkat et:
+- ML model seçimi ve eğitimi
+- Veri seti hazırlama ve preprocessing
+- Model değerlendirme metrikleri
+- Deployment ve MLOps
+- Etik AI prensipleri`,
+
+    ecommerce: `Bu bir E-ticaret projesidir. Prompt oluştururken şunlara dikkat et:
+- Ürün kataloğu ve envanter yönetimi
+- Ödeme sistemi entegrasyonu
+- Sepet ve checkout akışları
+- Kullanıcı yorumları ve derecelendirmeler
+- SEO ve performans optimizasyonu`,
+
+    iot: `Bu bir IoT / Gömülü Sistem projesidir. Prompt oluştururken şunlara dikkat et:
+- Sensör verisi toplama ve işleme
+- Gerçek zamanlı veri akışı
+- Edge computing ve bulut entegrasyonu
+- Güç yönetimi ve verimlilik
+- Güvenlik (cihaz ve ağ seviyesinde)`,
+
+    blockchain: `Bu bir Blockchain / Web3 projesidir. Prompt oluştururken şunlara dikkat et:
+- Akıllı kontrat geliştirme (Solidity, Rust)
+- Web3 entegrasyonu ve cüzdan bağlantısı
+- Merkeziyetsiz uygulama (dApp) mimarisi
+- Güvenlik denetimleri ve best practices
+- Gas optimizasyonu`,
+
+    contentPlatform: `Bu bir İçerik Platformu projesidir. Prompt oluştururken şunlara dikkat et:
+- İçerik yönetim sistemi (CMS) yapısı
+- Kullanıcı üretimi içerik (UGC) özellikleri
+- Sosyal özellikler (yorum, beğeni, paylaşım)
+- İçerik moderasyonu ve filtreleme
+- SEO ve içerik keşfedilebilirliği`,
+
+    automation: `Bu bir Otomasyon / Script projesidir. Prompt oluştururken şunlara dikkat et:
+- Script dili seçimi (Python, Bash, PowerShell)
+- Hata yönetimi ve logging
+- Zamanlama ve cron job'lar
+- API entegrasyonları
+- Otomasyon güvenliği ve erişim yönetimi`,
+
+    other: `Bu genel bir projedir. Prompt oluştururken şunlara dikkat et:
+- Projenin spesifik gereksinimlerini analiz et
+- Endüstri standartları ve best practices
+- Ölçeklenebilirlik ve bakım kolaylığı
+- Dokümantasyon ve test stratejisi`,
+  };
+
+  return guidanceMap[projectType] || guidanceMap.other;
+};
+
 const getComplexityDescription = (complexity) => {
   if (complexity <= 3) {
     return 'Simple, direct and concise prompt (100-200 words)';
@@ -612,7 +800,7 @@ const getQuestionCountByComplexity = (complexity) => {
  * @param {string} params.outputLanguage - Çıktı dili
  * @returns {Promise<string>} Oluşturulan rastgele prompt
  */
-export const generateRandomPrompt = async ({ apiKey, topic, complexity, targetAI, outputLanguage = 'English' }) => {
+export const generateRandomPrompt = async ({ apiKey, topic, complexity, targetAI, outputLanguage = 'English', projectType = 'webApp' }) => {
   try {
     const genAI = createGeminiClient(apiKey);
     
@@ -623,10 +811,12 @@ export const generateRandomPrompt = async ({ apiKey, topic, complexity, targetAI
       console.log('Konu var, normal generatePrompt kullanılıyor:', topic);
       return await generatePrompt({
         apiKey,
-        topic: `[RANDOMIZED] ${topic}`,
+        topic: topic,
         complexity,
         targetAI: targetAI || 'ChatGPT',
-        outputLanguage
+        outputLanguage,
+        projectType,
+        isRandomized: true // Rastgele varyasyonları etkinleştir
       });
     }
     

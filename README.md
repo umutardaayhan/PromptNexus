@@ -1,4 +1,4 @@
-# PromptNexus v1.1 ⚡
+# PromptNexus v1.2 ⚡
 
 ![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=white)
 ![Vite](https://img.shields.io/badge/Vite-5-646CFF?logo=vite&logoColor=white)
@@ -22,7 +22,7 @@
 
 PromptNexus is a modern web application that transforms your ideas into professional, optimized AI commands. It uses Google's Gemini 2.5 Flash model to generate high-quality prompts.
 
-### 🚀 v1.1 Features
+### 🚀 v1.2 Features
 
 - 🤖 **Gemini 2.5 Flash Integration** - Powerful Google AI model support
 - 🎨 **Deep Space Theme** - Modern, dark theme with easy-on-the-eyes interface
@@ -34,6 +34,7 @@ PromptNexus is a modern web application that transforms your ideas into professi
 - 📚 **29 Prompt Templates** - Ready-made templates with i18n support (English & Turkish)
 - 🎲 **Random Prompt Generator** - Generate creative, unexpected prompts based on your inputs
 - 📋 **Template Selection Indicator** - See and clear selected templates with one click
+- 💼 **Project Type Selection** - 12 project types for better context-aware prompts
 - 💾 **Secure API Management** - Your API key is stored locally in your browser
 - 📊 **Rate Limit Tracking** - Daily API usage counter with localStorage persistence
 - 📋 **Easy Copy** - One-click prompt copying
@@ -41,7 +42,15 @@ PromptNexus is a modern web application that transforms your ideas into professi
 - 📥 **Download Prompts** - Save prompts as text files
 - 🌐 **Full i18n Support** - Complete Turkish and English localization
 
-### 🆕 What's New in v1.1
+### 🆕 What's New in v1.2
+
+- **Project Type Selection** - Added 12 project types (Web App, Mobile Game, Data Analysis, Desktop App, API/Backend, AI/ML, E-commerce, IoT, Blockchain, Content Platform, Automation, Other)
+- **Per-API-Key Rate Limiting** - Rate limits are now tracked separately for each API key
+- **Enhanced Gemini Service** - Improved prompt generation with project type context
+- **Template Default Project Types** - Each template now has a default project type for better results
+- **UI/UX Improvements** - Better rate limit indicator with visual feedback
+
+### Previous Updates (v1.1)
 
 - **Dynamic Prompt Templates** - All 29 templates now support i18n (English & Turkish)
 - **Template Selection UI** - Visual indicator for selected templates with clear button
@@ -134,7 +143,8 @@ PromptNexus/
 │   ├── services/
 │   │   └── geminiService.js     # Gemini API service
 │   ├── data/
-│   │   └── promptTemplates.js   # Template definitions
+│   │   ├── promptTemplates.js   # Template definitions
+│   │   └── projectTypes.js      # Project type definitions
 │   ├── i18n/
 │   │   └── translations.js      # Language translations
 │   ├── App.jsx              # Main application
@@ -176,7 +186,7 @@ Contributions are welcome! Please open an issue first to discuss changes.
 
 PromptNexus, fikirlerinizi profesyonel, optimize edilmiş AI komutlarına dönüştüren modern bir web uygulamasıdır. Google'ın Gemini 2.5 Flash modelini kullanarak yüksek kaliteli promptlar oluşturur.
 
-### 🚀 v1.1 Özellikleri
+### 🚀 v1.2 Özellikleri
 
 - 🤖 **Gemini 2.5 Flash Entegrasyonu** - Güçlü Google AI modeli desteği
 - 🎨 **Derin Uzay Teması** - Modern, koyu tema ile göz yormayan arayüz
@@ -188,6 +198,7 @@ PromptNexus, fikirlerinizi profesyonel, optimize edilmiş AI komutlarına dönü
 - 📚 **29 Prompt Şablonu** - i18n destekli hazır şablonlar (İngilizce & Türkçe)
 - 🎲 **Rastgele Prompt Oluşturucu** - Girdilerinize göre yaratıcı, beklenmedik promptlar
 - 📋 **Şablon Seçim Göstergesi** - Seçili şablonları görüntüleme ve tek tıkla temizleme
+- 💼 **Proje Türü Seçimi** - Daha iyi bağlam farkındalığı için 12 proje türü
 - 💾 **Güvenli API Yönetimi** - API anahtarınız tarayıcınızda yerel saklanır
 - 📊 **Limit Takibi** - localStorage ile günlük API kullanım sayacı
 - 📋 **Kolay Kopyalama** - Tek tıkla prompt kopyalama
@@ -195,7 +206,15 @@ PromptNexus, fikirlerinizi profesyonel, optimize edilmiş AI komutlarına dönü
 - 📥 **Prompt İndirme** - Promptları metin dosyası olarak kaydetme
 - 🌐 **Tam i18n Desteği** - Tam Türkçe ve İngilizce yerelleştirme
 
-### 🆕 v1.1'de Yenilikler
+### 🆕 v1.2'de Yenilikler
+
+- **Proje Türü Seçimi** - 12 proje türü eklendi (Web Uygulaması, Mobil Oyun, Veri Analizi, Masaüstü Uygulaması, API/Backend, AI/ML, E-ticaret, IoT, Blockchain, İçerik Platformu, Otomasyon, Diğer)
+- **API Anahtarı Başına Limit Takibi** - Limitler artık her API anahtarı için ayrı takip ediliyor
+- **Geliştirilmiş Gemini Servisi** - Proje türü bağlamı ile iyileştirilmiş prompt oluşturma
+- **Şablon Varsayılan Proje Türleri** - Her şablon artık daha iyi sonuçlar için varsayılan bir proje türüne sahip
+- **UI/UX İyileştirmeleri** - Görsel geri bildirim ile daha iyi limit göstergesi
+
+### Önceki Güncellemeler (v1.1)
 
 - **Dinamik Prompt Şablonları** - Tüm 29 şablon artık i18n destekliyor (İngilizce & Türkçe)
 - **Şablon Seçim Arayüzü** - Seçili şablonlar için görsel gösterge ve temizleme butonu
@@ -288,7 +307,8 @@ PromptNexus/
 │   ├── services/
 │   │   └── geminiService.js     # Gemini API servisi
 │   ├── data/
-│   │   └── promptTemplates.js   # Şablon tanımları
+│   │   ├── promptTemplates.js   # Şablon tanımları
+│   │   └── projectTypes.js      # Proje türü tanımları
 │   ├── i18n/
 │   │   └── translations.js      # Dil çevirileri
 │   ├── App.jsx              # Ana uygulama
@@ -331,6 +351,15 @@ This project is licensed under the MIT License. / Bu proje MIT lisansı altında
 ---
 
 ## 📝 Changelog / Değişiklik Günlüğü
+
+### v1.2 (2026-01-31)
+- ✨ Added Project Type selection with 12 options
+- ✨ Added per-API-key rate limit tracking
+- ✨ Enhanced Gemini service with project type context
+- ✨ Added default project types to templates
+- ✨ Improved rate limit indicator UI
+- 🌐 Full Turkish and English localization
+- 🐛 Various bug fixes and improvements
 
 ### v1.1 (2026-01-31)
 - ✨ Added dynamic prompt templates with i18n support (29 templates)

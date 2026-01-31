@@ -1,25 +1,35 @@
 import { motion } from 'framer-motion';
-import { Zap, AlertTriangle, Clock } from 'lucide-react';
+import { Zap, AlertTriangle, Clock, Wifi } from 'lucide-react';
 
 /**
  * RateLimitIndicator Component
  * Shows API usage status and warnings
+ * Supports both dynamic (from API headers) and manual tracking
  */
-const RateLimitIndicator = ({ 
-  requestCount, 
-  maxRequests, 
-  remainingRequests, 
+const RateLimitIndicator = ({
+  requestCount,
+  maxRequests,
+  remainingRequests,
   isLimitReached,
   getTimeUntilReset,
-  t
+  t,
+  dynamicLimit,
+  dynamicRemaining
 }) => {
-  const usagePercentage = (requestCount / maxRequests) * 100;
+  // Dinamik limit bilgisi varsa onu kullan, yoksa manuel sayacı kullan
+  const effectiveMaxRequests = dynamicLimit || maxRequests;
+  const effectiveRemaining = dynamicRemaining !== null ? dynamicRemaining : remainingRequests;
+  const effectiveUsed = effectiveMaxRequests - effectiveRemaining;
+  const usagePercentage = (effectiveUsed / effectiveMaxRequests) * 100;
   
+  // Dinamik veri var mı?
+  const hasDynamicData = dynamicLimit !== null && dynamicRemaining !== null;
+   
   // Determine status color
   let statusColor = 'text-green-400';
   let bgColor = 'bg-green-400/10';
   let borderColor = 'border-green-400/20';
-  let Icon = Zap;
+  let Icon = hasDynamicData ? Wifi : Zap;
   
   if (usagePercentage >= 90 || isLimitReached) {
     statusColor = 'text-red-400';
@@ -77,10 +87,18 @@ const RateLimitIndicator = ({
             </div>
             <div>
               <p className="text-sm font-medium text-text-primary">
-                {t('rateLimit.usage', { count: requestCount, max: maxRequests })}
+                {hasDynamicData ? (
+                  <>API: {effectiveUsed}/{effectiveMaxRequests}</>
+                ) : (
+                  t('rateLimit.usage', { count: requestCount, max: maxRequests })
+                )}
               </p>
               <p className="text-xs text-text-muted">
-                {t('rateLimit.remaining', { remaining: remainingRequests })}
+                {hasDynamicData ? (
+                  <>Gerçek zamanlı: {effectiveRemaining} kaldı</>
+                ) : (
+                  t('rateLimit.remaining', { remaining: remainingRequests })
+                )}
               </p>
             </div>
           </div>

@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { MessageSquare, Target, Wand2, Globe, LayoutGrid, Shuffle, BookOpen, HelpCircle, X, FileText } from 'lucide-react';
+import { MessageSquare, Target, Wand2, Globe, LayoutGrid, Shuffle, BookOpen, HelpCircle, X, FileText, Briefcase } from 'lucide-react';
 import ComplexitySlider from './ComplexitySlider';
+import { projectTypes } from '../data/projectTypes';
 
 /**
  * InputLaboratory Component
@@ -18,12 +19,14 @@ const InputLaboratory = ({
   initialComplexity = 5,
   initialOutputLanguage = 'English',
   initialSelectedTemplate = null,
+  initialProjectType = 'webApp',
   t
 }) => {
   const [topic, setTopic] = useState(initialTopic);
   const [targetAI, setTargetAI] = useState(initialTargetAI);
   const [complexity, setComplexity] = useState(initialComplexity);
   const [outputLanguage, setOutputLanguage] = useState(initialOutputLanguage);
+  const [projectType, setProjectType] = useState(initialProjectType);
   const [notebookLMMode, setNotebookLMMode] = useState('deepResearch'); // 'deepResearch' | 'questionPrompts'
   const [selectedTemplate, setSelectedTemplate] = useState(initialSelectedTemplate); // Seçili şablonu takip et
 
@@ -67,12 +70,13 @@ const InputLaboratory = ({
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!topic.trim()) return;
-    
+
     onGenerate({
       topic: topic.trim(),
       targetAI,
       complexity,
       outputLanguage,
+      projectType,
       notebookLMMode: targetAI === 'NotebookLM' ? notebookLMMode : undefined
     });
   };
@@ -86,6 +90,7 @@ const InputLaboratory = ({
           targetAI: selectedTemplate.defaultTargetAI,
           complexity: selectedTemplate.defaultComplexity,
           outputLanguage: outputLanguage,
+          projectType: selectedTemplate.defaultProjectType || projectType,
           notebookLMMode: selectedTemplate.defaultTargetAI === 'NotebookLM' ? notebookLMMode : undefined
         });
       } else {
@@ -93,42 +98,23 @@ const InputLaboratory = ({
         const randomTargetAI = targetAI || targetAIOptions[Math.floor(Math.random() * targetAIOptions.length)].value;
         const randomComplexity = complexity || Math.floor(Math.random() * 10) + 1;
         const randomOutputLanguage = outputLanguage || outputLanguageOptions[Math.floor(Math.random() * outputLanguageOptions.length)].value;
-        
-        // Eğer konu boşsa, şablonlardan rastgele bir konu seç
-        const randomTopic = topic.trim() || getRandomTemplateTopic();
-        
+        const randomProjectType = projectTypes[Math.floor(Math.random() * projectTypes.length)].value;
+
+        // Konu alanını boş bırak - Gemini tamamen rastgele bir konu belirlesin
+
         onRandomize({
-          topic: randomTopic,
+          topic: '', // Boş bırak - Gemini tamamen rastgele bir konu belirlesin
           targetAI: randomTargetAI,
           complexity: randomComplexity,
           outputLanguage: randomOutputLanguage,
+          projectType: randomProjectType,
           notebookLMMode: randomTargetAI === 'NotebookLM' ? notebookLMMode : undefined
         });
       }
     }
   };
 
-  // Rastgele şablon konusu getir
-  const getRandomTemplateTopic = () => {
-    const randomTopics = [
-      'yapay zeka ve etik',
-      'sürdürülebilir enerji çözümleri',
-      'uzay keşfi',
-      'blok zincir teknolojisi',
-      'sanal gerçeklik',
-      'kripto para birimleri',
-      'küresel iklim değişikliği',
-      'otonom araçlar',
-      'biyoteknoloji',
-      'kuantum bilgisayarlar',
-      '5G ve iletişim',
-      'akıllı şehirler',
-      'robotik otomasyon',
-      'siber güvenlik',
-      'büyük veri analizi'
-    ];
-    return randomTopics[Math.floor(Math.random() * randomTopics.length)];
-  };
+
 
   const isNotebookLM = targetAI === 'NotebookLM';
 
@@ -138,8 +124,9 @@ const InputLaboratory = ({
     setTargetAI(initialTargetAI);
     setComplexity(initialComplexity);
     setOutputLanguage(initialOutputLanguage);
+    setProjectType(initialProjectType);
     setSelectedTemplate(initialSelectedTemplate);
-  }, [initialTopic, initialTargetAI, initialComplexity, initialOutputLanguage, initialSelectedTemplate]);
+  }, [initialTopic, initialTargetAI, initialComplexity, initialOutputLanguage, initialProjectType, initialSelectedTemplate]);
 
   return (
     <motion.div
@@ -240,6 +227,29 @@ const InputLaboratory = ({
             </select>
             <p className="text-xs text-text-muted">
               {targetAIOptions.find(opt => opt.value === targetAI)?.description}
+            </p>
+          </div>
+
+          {/* Project Type Selection */}
+          <div className="space-y-2">
+            <label className="flex items-center gap-2 text-sm font-medium text-text-primary">
+              <Briefcase className="w-4 h-4 text-neon-cyan" />
+              {t('projectTypeLabel')}
+            </label>
+            <select
+              value={projectType}
+              onChange={(e) => setProjectType(e.target.value)}
+              className="input-field"
+              disabled={isLoading}
+            >
+              {projectTypes.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {t(option.labelKey)}
+                </option>
+              ))}
+            </select>
+            <p className="text-xs text-text-muted">
+              {t(projectTypes.find(opt => opt.value === projectType)?.descriptionKey)}
             </p>
           </div>
 

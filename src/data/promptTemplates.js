@@ -24,6 +24,7 @@ export const promptTemplates = [
     topicKey: 'templates.items.blogPost.topic',
     defaultTargetAI: 'ChatGPT',
     defaultComplexity: 7,
+    defaultProjectType: 'contentPlatform',
   },
   {
     id: 'linkedin-post',
@@ -34,6 +35,7 @@ export const promptTemplates = [
     topicKey: 'templates.items.linkedinPost.topic',
     defaultTargetAI: 'ChatGPT',
     defaultComplexity: 6,
+    defaultProjectType: 'contentPlatform',
   },
   {
     id: 'email-campaign',
@@ -44,6 +46,7 @@ export const promptTemplates = [
     topicKey: 'templates.items.emailCampaign.topic',
     defaultTargetAI: 'ChatGPT',
     defaultComplexity: 8,
+    defaultProjectType: 'ecommerce',
   },
   {
     id: 'product-description',
@@ -54,6 +57,7 @@ export const promptTemplates = [
     topicKey: 'templates.items.productDescription.topic',
     defaultTargetAI: 'ChatGPT',
     defaultComplexity: 6,
+    defaultProjectType: 'ecommerce',
   },
   {
     id: 'essay',
@@ -64,6 +68,7 @@ export const promptTemplates = [
     topicKey: 'templates.items.essay.topic',
     defaultTargetAI: 'Claude',
     defaultComplexity: 9,
+    defaultProjectType: 'contentPlatform',
   },
 
   // Coding Templates
@@ -76,6 +81,7 @@ export const promptTemplates = [
     topicKey: 'templates.items.codeExplanation.topic',
     defaultTargetAI: 'ChatGPT',
     defaultComplexity: 7,
+    defaultProjectType: 'webApp',
   },
   {
     id: 'code-review',
@@ -86,6 +92,7 @@ export const promptTemplates = [
     topicKey: 'templates.items.codeReview.topic',
     defaultTargetAI: 'Claude',
     defaultComplexity: 8,
+    defaultProjectType: 'webApp',
   },
   {
     id: 'api-design',
@@ -96,6 +103,7 @@ export const promptTemplates = [
     topicKey: 'templates.items.apiDesign.topic',
     defaultTargetAI: 'ChatGPT',
     defaultComplexity: 8,
+    defaultProjectType: 'api',
   },
   {
     id: 'database-schema',
@@ -106,6 +114,7 @@ export const promptTemplates = [
     topicKey: 'templates.items.databaseSchema.topic',
     defaultTargetAI: 'ChatGPT',
     defaultComplexity: 8,
+    defaultProjectType: 'api',
   },
   {
     id: 'unit-tests',
@@ -116,6 +125,7 @@ export const promptTemplates = [
     topicKey: 'templates.items.unitTests.topic',
     defaultTargetAI: 'GitHubCopilot',
     defaultComplexity: 7,
+    defaultProjectType: 'webApp',
   },
   {
     id: 'react-component',
@@ -126,6 +136,7 @@ export const promptTemplates = [
     topicKey: 'templates.items.reactComponent.topic',
     defaultTargetAI: 'Cursor',
     defaultComplexity: 7,
+    defaultProjectType: 'webApp',
   },
   {
     id: 'full-stack-app',
@@ -136,6 +147,7 @@ export const promptTemplates = [
     topicKey: 'templates.items.fullStackApp.topic',
     defaultTargetAI: 'Cursor',
     defaultComplexity: 9,
+    defaultProjectType: 'webApp',
   },
 
   // Image Templates
@@ -148,6 +160,7 @@ export const promptTemplates = [
     topicKey: 'templates.items.midjourneyPortrait.topic',
     defaultTargetAI: 'Midjourney',
     defaultComplexity: 6,
+    defaultProjectType: 'contentPlatform',
   },
   {
     id: 'midjourney-landscape',
@@ -158,6 +171,7 @@ export const promptTemplates = [
     topicKey: 'templates.items.midjourneyLandscape.topic',
     defaultTargetAI: 'Midjourney',
     defaultComplexity: 6,
+    defaultProjectType: 'contentPlatform',
   },
   {
     id: 'midjourney-logo',
@@ -168,6 +182,7 @@ export const promptTemplates = [
     topicKey: 'templates.items.midjourneyLogo.topic',
     defaultTargetAI: 'Midjourney',
     defaultComplexity: 5,
+    defaultProjectType: 'webApp',
   },
   {
     id: 'midjourney-product',
@@ -178,6 +193,7 @@ export const promptTemplates = [
     topicKey: 'templates.items.midjourneyProduct.topic',
     defaultTargetAI: 'Midjourney',
     defaultComplexity: 6,
+    defaultProjectType: 'ecommerce',
   },
   {
     id: 'dalle-illustration',
@@ -188,6 +204,7 @@ export const promptTemplates = [
     topicKey: 'templates.items.dalleIllustration.topic',
     defaultTargetAI: 'DALL-E',
     defaultComplexity: 6,
+    defaultProjectType: 'contentPlatform',
   },
   {
     id: 'dalle-concept',
@@ -198,6 +215,7 @@ export const promptTemplates = [
     topicKey: 'templates.items.dalleConcept.topic',
     defaultTargetAI: 'DALL-E',
     defaultComplexity: 7,
+    defaultProjectType: 'contentPlatform',
   },
 
   // Business Templates
@@ -210,6 +228,7 @@ export const promptTemplates = [
     topicKey: 'templates.items.businessPlan.topic',
     defaultTargetAI: 'Claude',
     defaultComplexity: 9,
+    defaultProjectType: 'other',
   },
   {
     id: 'pitch-deck',
@@ -220,6 +239,7 @@ export const promptTemplates = [
     topicKey: 'templates.items.pitchDeck.topic',
     defaultTargetAI: 'ChatGPT',
     defaultComplexity: 8,
+    defaultProjectType: 'other',
   },
   {
     id: 'marketing-strategy',
@@ -230,6 +250,7 @@ export const promptTemplates = [
     topicKey: 'templates.items.marketingStrategy.topic',
     defaultTargetAI: 'ChatGPT',
     defaultComplexity: 8,
+    defaultProjectType: 'ecommerce',
   },
   {
     id: 'swot-analysis',
@@ -240,6 +261,7 @@ export const promptTemplates = [
     topicKey: 'templates.items.swotAnalysis.topic',
     defaultTargetAI: 'ChatGPT',
     defaultComplexity: 7,
+    defaultProjectType: 'other',
   },
   {
     id: 'job-description',
@@ -250,6 +272,7 @@ export const promptTemplates = [
     topicKey: 'templates.items.jobDescription.topic',
     defaultTargetAI: 'ChatGPT',
     defaultComplexity: 6,
+    defaultProjectType: 'other',
   },
 
   // Creative Templates
@@ -262,6 +285,7 @@ export const promptTemplates = [
     topicKey: 'templates.items.storyPlot.topic',
     defaultTargetAI: 'Claude',
     defaultComplexity: 8,
+    defaultProjectType: 'contentPlatform',
   },
   {
     id: 'character-design',
@@ -272,6 +296,7 @@ export const promptTemplates = [
     topicKey: 'templates.items.characterDesign.topic',
     defaultTargetAI: 'ChatGPT',
     defaultComplexity: 7,
+    defaultProjectType: 'contentPlatform',
   },
   {
     id: 'video-script',
@@ -282,6 +307,7 @@ export const promptTemplates = [
     topicKey: 'templates.items.videoScript.topic',
     defaultTargetAI: 'ChatGPT',
     defaultComplexity: 7,
+    defaultProjectType: 'contentPlatform',
   },
   {
     id: 'podcast-outline',
@@ -292,6 +318,7 @@ export const promptTemplates = [
     topicKey: 'templates.items.podcastOutline.topic',
     defaultTargetAI: 'ChatGPT',
     defaultComplexity: 6,
+    defaultProjectType: 'contentPlatform',
   },
   {
     id: 'social-media',
@@ -302,6 +329,7 @@ export const promptTemplates = [
     topicKey: 'templates.items.socialMedia.topic',
     defaultTargetAI: 'ChatGPT',
     defaultComplexity: 7,
+    defaultProjectType: 'contentPlatform',
   },
   {
     id: 'creative-writing',
@@ -312,6 +340,7 @@ export const promptTemplates = [
     topicKey: 'templates.items.creativeWriting.topic',
     defaultTargetAI: 'Claude',
     defaultComplexity: 7,
+    defaultProjectType: 'contentPlatform',
   },
 ];
 

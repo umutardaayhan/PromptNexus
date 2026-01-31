@@ -12,7 +12,7 @@ import Footer from './components/Footer';
 import TemplateGallery from './components/TemplateGallery';
 import HistoryPanel from './components/HistoryPanel';
 import FavoritesPanel from './components/FavoritesPanel';
-import RateLimitIndicator from './components/RateLimitIndicator';
+
 
 // Hooks & Services
 import { useLocalStorage } from './hooks/useLocalStorage';
@@ -48,18 +48,14 @@ function App() {
     formatTimestamp: formatFavoriteTimestamp,
   } = useFavorites();
 
-  // Rate limit hook
-  const {
-    requestCount,
-    maxRequests,
-    remainingRequests,
-    isLimitReached,
-    incrementRequest,
-    getTimeUntilReset,
-  } = useRateLimit();
 
   // State
   const [apiKey, setApiKey] = useLocalStorage('gemini_api_key', '');
+  
+  // Rate limit hook - API anahtarına göre ayrı count tutar
+  const {
+    incrementRequest,
+  } = useRateLimit(apiKey);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isTemplateGalleryOpen, setIsTemplateGalleryOpen] = useState(false);
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
@@ -76,6 +72,7 @@ function App() {
     complexity: 5,
     outputLanguage: currentLanguage === 'tr' ? 'Türkçe' : 'English',
     selectedTemplate: null,
+    projectType: 'webApp',
   });
 
   /**
@@ -95,7 +92,7 @@ function App() {
   /**
    * Handle random prompt generation
    */
-  const handleRandomize = async ({ topic, targetAI, complexity, outputLanguage, notebookLMMode }) => {
+  const handleRandomize = async ({ topic, targetAI, complexity, outputLanguage, projectType, notebookLMMode }) => {
     // Check API key
     if (!apiKey) {
       showToast(t('toast.apiKeyRequired'), 'error');
@@ -103,27 +100,15 @@ function App() {
       return;
     }
 
-    // Check rate limit
-    if (isLimitReached) {
-      showToast(
-        `API rate limit reached. Limit resets in ${getTimeUntilReset}. Please try again tomorrow or use a different API key.`,
-        'error'
-      );
-      return;
-    }
-
-    // Increment request count
+    // Increment request count - sadece limit aşıldığında false döner
     if (!incrementRequest()) {
-      showToast(
-        `API rate limit reached. Limit resets in ${getTimeUntilReset}.`,
-        'error'
-      );
+      showToast(t('toast.limitReached'), 'error');
       return;
     }
 
     setIsLoading(true);
     setResult('');
-    setCurrentPromptData({ topic, targetAI, complexity, outputLanguage });
+    setCurrentPromptData({ topic, targetAI, complexity, outputLanguage, projectType });
 
     // Input alanlarını güncelle
     setInputState({
@@ -131,17 +116,19 @@ function App() {
       targetAI,
       complexity,
       outputLanguage,
+      projectType,
     });
 
     try {
       // Rastgele butonu için generateRandomPrompt kullan, ama topic ve targetAI bilgilerini de gönder
-      const generatedPrompt = targetAI === 'NotebookLM' 
+      const generatedPrompt = targetAI === 'NotebookLM'
         ? await generatePrompt({
             apiKey,
             topic,
             targetAI,
             complexity,
             outputLanguage,
+            projectType,
             notebookLMMode
           })
         : await generateRandomPrompt({
@@ -149,7 +136,8 @@ function App() {
             topic,
             targetAI,
             complexity,
-            outputLanguage
+            outputLanguage,
+            projectType
           });
 
       setResult(generatedPrompt);
@@ -161,13 +149,14 @@ function App() {
         targetAI,
         complexity,
         outputLanguage,
+        projectType,
       });
 
       showToast(t('toast.promptGenerated'), 'success');
     } catch (error) {
       console.error('Random prompt generation error:', error);
       showToast(error.message, 'error');
-      
+
       // Open settings if API key error
       if (error.message.includes('API') || error.message.includes('Invalid')) {
         setIsSettingsOpen(true);
@@ -180,7 +169,7 @@ function App() {
   /**
    * Handle prompt generation
    */
-  const handleGenerate = async ({ topic, targetAI, complexity, outputLanguage, notebookLMMode }) => {
+  const handleGenerate = async ({ topic, targetAI, complexity, outputLanguage, projectType, notebookLMMode }) => {
     // Check API key
     if (!apiKey) {
       showToast(t('toast.apiKeyRequired'), 'error');
@@ -188,27 +177,15 @@ function App() {
       return;
     }
 
-    // Check rate limit
-    if (isLimitReached) {
-      showToast(
-        `API rate limit reached. Limit resets in ${getTimeUntilReset}. Please try again tomorrow or use a different API key.`,
-        'error'
-      );
-      return;
-    }
-
-    // Increment request count
+    // Increment request count - sadece limit aşıldığında false döner
     if (!incrementRequest()) {
-      showToast(
-        `API rate limit reached. Limit resets in ${getTimeUntilReset}.`,
-        'error'
-      );
+      showToast(t('toast.limitReached'), 'error');
       return;
     }
 
     setIsLoading(true);
     setResult('');
-    setCurrentPromptData({ topic, targetAI, complexity, outputLanguage });
+    setCurrentPromptData({ topic, targetAI, complexity, outputLanguage, projectType });
 
     try {
       const generatedPrompt = await generatePrompt({
@@ -217,11 +194,12 @@ function App() {
         targetAI,
         complexity,
         outputLanguage,
+        projectType,
         notebookLMMode
       });
 
       setResult(generatedPrompt);
-      
+
       // Add to history
       addToHistory({
         topic,
@@ -229,6 +207,7 @@ function App() {
         targetAI,
         complexity,
         outputLanguage,
+        projectType,
       });
 
       showToast(t('toast.promptGenerated'), 'success');
@@ -276,6 +255,7 @@ function App() {
       complexity: template.defaultComplexity,
       outputLanguage: currentLanguage === 'tr' ? 'Türkçe' : 'English',
       selectedTemplate: template, // Şablon bilgisini de sakla
+      projectType: template.defaultProjectType || 'webApp',
     });
   };
 
@@ -298,6 +278,7 @@ function App() {
       targetAI: entry.targetAI,
       complexity: entry.complexity,
       outputLanguage: entry.outputLanguage,
+      projectType: entry.projectType || 'webApp',
     });
     setResult(entry.result);
     setCurrentPromptData({
@@ -305,6 +286,7 @@ function App() {
       targetAI: entry.targetAI,
       complexity: entry.complexity,
       outputLanguage: entry.outputLanguage,
+      projectType: entry.projectType || 'webApp',
     });
   };
 
@@ -317,6 +299,7 @@ function App() {
       targetAI: favorite.targetAI,
       complexity: favorite.complexity,
       outputLanguage: favorite.outputLanguage,
+      projectType: favorite.projectType || 'webApp',
     });
     setResult(favorite.result);
     setCurrentPromptData({
@@ -324,6 +307,7 @@ function App() {
       targetAI: favorite.targetAI,
       complexity: favorite.complexity,
       outputLanguage: favorite.outputLanguage,
+      projectType: favorite.projectType || 'webApp',
     });
   };
 
@@ -369,18 +353,6 @@ function App() {
           {/* Hero Section */}
           <HeroSection t={t} />
 
-          {/* Rate Limit Indicator */}
-          <div className="mt-8">
-            <RateLimitIndicator
-              requestCount={requestCount}
-              maxRequests={maxRequests}
-              remainingRequests={remainingRequests}
-              isLimitReached={isLimitReached}
-              getTimeUntilReset={getTimeUntilReset}
-              t={t}
-            />
-          </div>
-
           {/* Content Grid */}
           <div className="mt-12 grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
             {/* Left Side - Input Form */}
@@ -389,7 +361,7 @@ function App() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
             >
-              <InputLaboratory 
+              <InputLaboratory
                 onGenerate={handleGenerate}
                 onRandomize={handleRandomize}
                 isLoading={isLoading}
@@ -400,6 +372,7 @@ function App() {
                 initialComplexity={inputState.complexity}
                 initialOutputLanguage={inputState.outputLanguage}
                 initialSelectedTemplate={inputState.selectedTemplate}
+                initialProjectType={inputState.projectType}
                 t={t}
               />
             </motion.div>

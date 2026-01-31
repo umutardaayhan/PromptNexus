@@ -62,6 +62,36 @@ export const translations = {
       NotebookLM: 'Deep research and podcast generation',
     },
 
+    // Project Types
+    projectTypeLabel: 'Project Type',
+    projectTypeHint: 'Select the type of project you are working on',
+    projectTypes: {
+      webApp: 'Web Application',
+      webAppDesc: 'Web-based applications and websites',
+      mobileGame: 'Mobile Game',
+      mobileGameDesc: 'Mobile platform games',
+      dataAnalysis: 'Data Analysis',
+      dataAnalysisDesc: 'Data analysis and visualization',
+      desktopApp: 'Desktop Application',
+      desktopAppDesc: 'Applications for computers',
+      api: 'API / Backend',
+      apiDesc: 'API and backend services',
+      aiMl: 'AI / Machine Learning',
+      aiMlDesc: 'AI and ML projects',
+      ecommerce: 'E-commerce',
+      ecommerceDesc: 'Online sales platforms',
+      iot: 'IoT / Embedded',
+      iotDesc: 'Internet of Things projects',
+      blockchain: 'Blockchain / Web3',
+      blockchainDesc: 'Blockchain-based projects',
+      contentPlatform: 'Content Platform',
+      contentPlatformDesc: 'Blogs, social media, content sites',
+      automation: 'Automation / Script',
+      automationDesc: 'Automation and script projects',
+      other: 'Other',
+      otherDesc: 'Other project types',
+    },
+
     notebookLM: {
       deepResearchTab: 'Deep Research',
       questionPromptsTab: 'Question Prompts',
@@ -123,6 +153,7 @@ export const translations = {
       apiKeyCleared: 'API key cleared',
       copySuccess: 'Copied to clipboard!',
       copyError: 'Failed to copy',
+      limitReached: 'Your limit is exhausted, try again tomorrow',
     },
 
     // Templates
@@ -389,6 +420,36 @@ export const translations = {
       NotebookLM: 'Derin araştırma ve podcast oluşturma',
     },
 
+    // Project Types
+    projectTypeLabel: 'Proje Türü',
+    projectTypeHint: 'Çalıştığınız proje türünü seçin',
+    projectTypes: {
+      webApp: 'Web Uygulaması',
+      webAppDesc: 'Web tabanlı uygulamalar ve siteler',
+      mobileGame: 'Mobil Oyun',
+      mobileGameDesc: 'Mobil platform oyunları',
+      dataAnalysis: 'Veri Analizi',
+      dataAnalysisDesc: 'Veri analizi ve görselleştirme',
+      desktopApp: 'Masaüstü Uygulaması',
+      desktopAppDesc: 'Bilgisayar için uygulamalar',
+      api: 'API / Backend',
+      apiDesc: 'API ve backend servisleri',
+      aiMl: 'AI / Makine Öğrenmesi',
+      aiMlDesc: 'Yapay zeka ve ML projeleri',
+      ecommerce: 'E-ticaret',
+      ecommerceDesc: 'Online satış platformları',
+      iot: 'IoT / Gömülü Sistem',
+      iotDesc: 'Nesnelerin interneti projeleri',
+      blockchain: 'Blockchain / Web3',
+      blockchainDesc: 'Blok zinciri tabanlı projeler',
+      contentPlatform: 'İçerik Platformu',
+      contentPlatformDesc: 'Blog, sosyal medya, içerik siteleri',
+      automation: 'Otomasyon / Script',
+      automationDesc: 'Otomasyon ve script projeleri',
+      other: 'Diğer',
+      otherDesc: 'Diğer proje türleri',
+    },
+
     notebookLM: {
       deepResearchTab: 'Derin Araştırma',
       questionPromptsTab: 'Soru Promptları',
@@ -450,6 +511,7 @@ export const translations = {
       apiKeyCleared: 'API anahtarı temizlendi',
       copySuccess: 'Panoya kopyalandı!',
       copyError: 'Kopyalama başarısız',
+      limitReached: 'Limitiniz Tükendi, yarın tekrar deneyin',
     },
 
     // Templates

@@ -1,4 +1,4 @@
-# PromptNexus v1.2 ⚡
+# PromptNexus v1.2.1 ⚡
 
 ![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=white)
 ![Vite](https://img.shields.io/badge/Vite-5-646CFF?logo=vite&logoColor=white)
@@ -42,21 +42,9 @@ PromptNexus is a modern web application that transforms your ideas into professi
 - 📥 **Download Prompts** - Save prompts as text files
 - 🌐 **Full i18n Support** - Complete Turkish and English localization
 
-### 🆕 What's New in v1.2
+### 🆕 What's New
 
-- **Project Type Selection** - Added 12 project types (Web App, Mobile Game, Data Analysis, Desktop App, API/Backend, AI/ML, E-commerce, IoT, Blockchain, Content Platform, Automation, Other)
-- **Per-API-Key Rate Limiting** - Rate limits are now tracked separately for each API key
-- **Enhanced Gemini Service** - Improved prompt generation with project type context
-- **Template Default Project Types** - Each template now has a default project type for better results
-- **UI/UX Improvements** - Better rate limit indicator with visual feedback
-
-### Previous Updates (v1.1)
-
-- **Dynamic Prompt Templates** - All 29 templates now support i18n (English & Turkish)
-- **Template Selection UI** - Visual indicator for selected templates with clear button
-- **Rate Limit Persistence** - API usage counter now persists across page refreshes
-- **Improved Notebook LM** - Deep Research mode now generates research sentences based on user input
-- **Random Button Fix** - Randomize button now respects selected templates and user inputs
+See [CHANGELOG.md](CHANGELOG.md) for detailed version history.
 
 ### 🛠️ Tech Stack
 
@@ -206,21 +194,9 @@ PromptNexus, fikirlerinizi profesyonel, optimize edilmiş AI komutlarına dönü
 - 📥 **Prompt İndirme** - Promptları metin dosyası olarak kaydetme
 - 🌐 **Tam i18n Desteği** - Tam Türkçe ve İngilizce yerelleştirme
 
-### 🆕 v1.2'de Yenilikler
+### 🆕 Yenilikler
 
-- **Proje Türü Seçimi** - 12 proje türü eklendi (Web Uygulaması, Mobil Oyun, Veri Analizi, Masaüstü Uygulaması, API/Backend, AI/ML, E-ticaret, IoT, Blockchain, İçerik Platformu, Otomasyon, Diğer)
-- **API Anahtarı Başına Limit Takibi** - Limitler artık her API anahtarı için ayrı takip ediliyor
-- **Geliştirilmiş Gemini Servisi** - Proje türü bağlamı ile iyileştirilmiş prompt oluşturma
-- **Şablon Varsayılan Proje Türleri** - Her şablon artık daha iyi sonuçlar için varsayılan bir proje türüne sahip
-- **UI/UX İyileştirmeleri** - Görsel geri bildirim ile daha iyi limit göstergesi
-
-### Önceki Güncellemeler (v1.1)
-
-- **Dinamik Prompt Şablonları** - Tüm 29 şablon artık i18n destekliyor (İngilizce & Türkçe)
-- **Şablon Seçim Arayüzü** - Seçili şablonlar için görsel gösterge ve temizleme butonu
-- **Limit Kalıcılığı** - API kullanım sayacı artık sayfa yenilemelerinde korunuyor
-- **Geliştirilmiş Notebook LM** - Deep Research modu artık kullanıcı girdisine göre araştırma cümleleri oluşturuyor
-- **Rastgele Buton Düzeltmesi** - Rastgele butonu artık seçili şablonlara ve kullanıcı girdilerine saygı gösteriyor
+Detaylı sürüm geçmişi için [CHANGELOG.md](CHANGELOG.md) dosyasına bakın.
 
 ### 🛠️ Teknolojiler
 

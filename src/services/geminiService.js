@@ -57,13 +57,13 @@ const SYSTEM_INSTRUCTION = `
     6. HEDEF MODEL ÖZELLEŞTİRMESİ:
        - EĞER Hedef Model "Claude" veya "GPT-4" ise ve konu web/yazılım ise:
          Promptun sonuna teknik bir "Implementation Plan" (Uygulama Planı) ekle.
-         Şunları zorunlu kıl: 
+         Şunları zorunlu kıl:
          a) Modern Tech Stack (Next.js, Tailwind, vb.)
          b) Renk kodları (Hex codes) ve Tipografi.
          c) "Artifact" kullanımı (Claude için).
          d) Çıktının sadece metin değil, "Kopyalanabilir Kod" odaklı olmasını emret.
          
-         KESİNLİKLE YASAK: Kod blokları, backtickler, markdown formatı. Sadece metinsel talimatlar ver.
+         ÇIKTI FORMATI: Düz metin kullan. Markdown kod bloklari (3 ters tirnak), inline kod backtickleri (tek ters tirnak) veya terminal komutlari kullanma. Tum talimatlari duz metin olarak yaz.
          
        - EĞER Hedef Model "Cursor", "Antigravity", "KiloCode", "GitHubCopilot" veya "Windsurf" ise:
          Bu araçlar kod editörü/agent IDE'lerdir. Prompt şunları içermeli:
@@ -72,7 +72,7 @@ const SYSTEM_INSTRUCTION = `
          c) Debugging ve test stratejileri
          d) Context-aware kod önerileri için gerekli bağlam bilgisi
          
-         KESİNLİKLE YASAK: Terminal komutları, kod blokları, backtickler. Sadece metinsel talimatlar ver.
+         ÇIKTI FORMATI: Düz metin kullan. Markdown kod bloklari (3 ters tirnak), inline kod backtickleri (tek ters tirnak) veya terminal komutlari kullanma. Tum talimatlari duz metin olarak yaz.
 
     ---
     DÖNÜŞÜM ÖRNEĞİ - SEVİYE 2 (Basit):
@@ -159,24 +159,21 @@ const SYSTEM_INSTRUCTION = `
     ---
 
     EN ÖNEMLİ KURAL - ÇIKTI FORMATI:
-    7. KESİNLİKLE SOHBET ETME: AI ile konuşur gibi cümleler kullanma
-       - YASAK: "Hazır ol", "İşte promptun", "Buyur", "Şunu yapmanı istiyorum"
-       - YASAK: "Bu promptu kullan", "Şimdi şunu yap"
-       - YASAK: Hedef AI'ya hitap eden cümleler (örn: "KiloCode, bu projeyi yap...")
-    8. SADECE PROMPT METNİ: Ürettiğin şey DOĞRUDAN kullanılabilir prompt olmalı
+    7. SADECE PROMPT METNİ ÜRET: Ürettiğin şey DOĞRUDAN kullanılabilir prompt olmalı
        - Başında "Prompt:" yazma
        - Sonunda açıklama yapma
        - Tırnak işaretleri kullanma
-    9. YAPISAL OL: Başlıklar, maddeler, kurallar kullan
-    10. ROL BELİRLE AMA SOHBET ETME: Rol tanımla ama o rolle konuşma
-    11. KESİNLİKLE KOD BLOKLARI KULLANMA: 
-       - YASAK: Markdown kod blokları (3 backtick ile çevrili kod)
-       - YASAK: Inline kod backtickleri (tek backtick ile çevrili metin)
-       - YASAK: Terminal komutları (npm install, git clone vb.)
-       - SADECE METİNSEL TALİMATLAR: Kod yazdırılacaksa bile, sadece metin olarak talimat ver. Örnek: "Bir React bileşeni oluştur" yerine "React bileşeni kodunu yaz" değil, "React bileşeni oluşturmasını iste" şeklinde metinsel talimat ver.
+       - "Hazır ol", "İşte promptun", "Buyur" gibi ifadeler kullanma
+       - Hedef AI'ya hitap etme (örn: "KiloCode, bu projeyi yap...")
+    8. YAPISAL OL: Başlıklar, maddeler, kurallar kullan
+    9. ROL BELİRLE AMA SOHBET ETME: Rol tanımla ama o rolle konuşma
+    10. DÜZ METİN KULLAN:
+       - Markdown kod bloklari (3 ters tirnak) kullanma
+       - Inline kod backtickleri (tek ters tirnak) kullanma
+       - Terminal komutlari (npm install, git clone vb.) kullanma
+       - Kod yazdirilacaksa bile, sadece duz metin olarak talimat ver
 
-    ŞİMDİ: Kullanıcının isteği ve karmaşıklık seviyesine göre BU KALİTEDE bir prompt üret.
-    ÇIKTI FORMATI: Sadece ve sadece ürettiğin prompt metnini ver. Sohbet etme, giriş cümlesi (İşte promptunuz vb.) yazma.
+    [GÖREV]: Yukaridaki tum kurallari uygulayarak kullanicinin istedigi konuda bir prompt olustur.
     `;
 
 /**
@@ -378,33 +375,31 @@ ${projectTypeGuidance}
 
 ${complexityDirective}
 
-Yukarıdaki bilgilere göre optimize edilmiş bir prompt oluşturun. 
+Yukarıdaki bilgilere göre optimize edilmiş bir prompt oluştur.
 
-KESİNLİKLE UYULMASI GEREKEN KURALLAR:
-1. Kullanıcının belirttiği ${complexity}/10 karmaşıklık seviyesine GÖRE promptun uzunluğunu ve detayını ayarla. 
+GÖREV KURALLARI:
+1. Kullanıcının belirttiği ${complexity}/10 karmaşıklık seviyesine GÖRE promptun uzunluğunu ve detayını ayarla.
    - Eğer 1-3 ise KISA ve BASİT
    - Eğer 4-6 ise ORTA seviyede
    - Eğer 7-8 ise DETAYLI
-   - Eğir 9-10 ise ÇOK DETAYLI ve AKADEMİK olsun.
+   - Eğer 9-10 ise ÇOK DETAYLI ve AKADEMİK olsun.
 
 2. EĞER RASTGELE VARYASYONLAR VERİLDİYSE:
    - Prompt içindeki [RANDOMIZED] veya benzeri yer tutucuları DOLDUR
    - Varyasyonları promptun doğal bir parçası olarak entegre et
    - Örneğin: "[RANDOMIZED] biyoteknoloji" → "${randomVariations ? randomVariations.scope + ' bir yaklaşımla biyoteknoloji konusunda ' + randomVariations.angle + ' ' + randomVariations.focus + ' üzerine odaklanan, ' + randomVariations.perspective + ' bir bakış açısı sunan' : 'kapsamlı bir yaklaşımla biyoteknoloji konusunda yeni başlayanlar için temel prensipler üzerine odaklanan, optimist bir bakış açısı sunan'}"
 
-3. KESİNLİKLE SOHBET ETME - BU ÇOK ÖNEMLİ:
+3. SADECE PROMPT METNİ ÜRET:
    - Hedef AI'ya hitap ETME (örn: "KiloCode, bu projeyi yap...")
-   - Emir kipi kullanma (örn: "Hazır ol", "Şunu yap", "İşte promptun")
+   - "Hazır ol", "Şunu yap", "İşte promptun" gibi ifadeler kullanma
    - Giriş/sonuç cümleleri ekleme
-   - Sadece YAPISAL prompt içeriği üret
-
-4. ÇIKTI SADECE PROMPT OLSUN:
    - Başında "Prompt:" yazma
    - Sonunda açıklama yapma
    - Tırnak işaretleri kullanma
+   - Sadece YAPISAL prompt içeriği üret
    - Doğrudan kullanılabilir içerik üret
 
-ÖNEMLİ: Oluşturacağın prompt MUTLAKA ${outputLanguage} dilinde olmalıdır.`;
+4. Oluşturacağın prompt MUTLAKA ${outputLanguage} dilinde olmalıdır.`;
 };
 
 /**

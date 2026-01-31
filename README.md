@@ -1,4 +1,4 @@
-# PromptNexus v1.2.1 ⚡
+# PromptNexus v1.2.2 ⚡
 
 ![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=white)
 ![Vite](https://img.shields.io/badge/Vite-5-646CFF?logo=vite&logoColor=white)
@@ -25,6 +25,7 @@ PromptNexus is a modern web application that transforms your ideas into professi
 ### 🚀 v1.2 Features
 
 - 🤖 **Gemini 2.5 Flash Integration** - Powerful Google AI model support
+- 🌐 **English-Only Prompt Generation** - All prompts sent to Gemini in English for better AI comprehension
 - 🎨 **Deep Space Theme** - Modern, dark theme with easy-on-the-eyes interface
 - ⚡ **Fast & Responsive** - Instant prompt generation
 - 🎯 **Multi-AI Support** - Optimized for ChatGPT, Claude, Midjourney, DALL-E, Gemini, and Notebook LM
@@ -42,7 +43,9 @@ PromptNexus is a modern web application that transforms your ideas into professi
 - 📥 **Download Prompts** - Save prompts as text files
 - 🌐 **Full i18n Support** - Complete Turkish and English localization
 
-### 🆕 What's New
+### 🆕 What's New in v1.2.2
+
+- **English-Only Prompt Generation** - All prompts sent to Gemini API are now in English for better AI comprehension, while output respects user's selected language
 
 See [CHANGELOG.md](CHANGELOG.md) for detailed version history.
 

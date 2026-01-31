@@ -160,7 +160,7 @@ PromptNexus/
 3. **Select Target AI:** Choose which AI model to optimize for
 4. **Adjust Temperature:** Set the complexity level (1-10)
 5. **Select Output Language:** Choose the language for the generated prompt
-6. **Use Templates (Optional):** Click "Templates" to choose from 26 ready-made templates
+6. **Use Templates (Optional):** Click "Templates" to choose from 29 ready-made templates
 7. **Generate:** Click the "Generate Prompt" button
 8. **Copy:** Copy the result with one click or download as a file
 
@@ -197,7 +197,7 @@ PromptNexus, fikirlerinizi profesyonel, optimize edilmiş AI komutlarına dönü
 
 ### 🆕 v1.1'de Yenilikler
 
-- **Dinamik Prompt Şablonları** - Tüm 26 şablon artık i18n destekliyor (İngilizce & Türkçe)
+- **Dinamik Prompt Şablonları** - Tüm 29 şablon artık i18n destekliyor (İngilizce & Türkçe)
 - **Şablon Seçim Arayüzü** - Seçili şablonlar için görsel gösterge ve temizleme butonu
 - **Limit Kalıcılığı** - API kullanım sayacı artık sayfa yenilemelerinde korunuyor
 - **Geliştirilmiş Notebook LM** - Deep Research modu artık kullanıcı girdisine göre araştırma cümleleri oluşturuyor
@@ -333,7 +333,7 @@ This project is licensed under the MIT License. / Bu proje MIT lisansı altında
 ## 📝 Changelog / Değişiklik Günlüğü
 
 ### v1.1 (2026-01-31)
-- ✨ Added dynamic prompt templates with i18n support (26 templates)
+- ✨ Added dynamic prompt templates with i18n support (29 templates)
 - ✨ Added template selection indicator with clear button
 - ✨ Added rate limit persistence across page refreshes
 - ✨ Improved Notebook LM Deep Research mode

@@ -1,0 +1,279 @@
+# PromptNexus v1.0 ⚡
+
+![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-5-646CFF?logo=vite&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind-3-38B2AC?logo=tailwind-css&logoColor=white)
+![License](https://img.shields.io/badge/License-MIT-green.svg)
+
+
+
+---
+
+## 🇬🇧 English
+
+**Gemini-Powered AI Prompt Generator**
+
+PromptNexus is a modern web application that transforms your ideas into professional, optimized AI commands. It uses Google's Gemini 2.5 Flash model to generate high-quality prompts.
+
+### 🚀 v1.0 Features
+
+- 🤖 **Gemini 2.5 Flash Integration** - Powerful Google AI model support
+- 🎨 **Deep Space Theme** - Modern, dark theme with easy-on-the-eyes interface
+- ⚡ **Fast & Responsive** - Instant prompt generation
+- 🎯 **Multi-AI Support** - Optimized for ChatGPT, Claude, Midjourney, DALL-E, and Gemini
+- 💻 **IDE Agent Support** - Special support for Cursor, KiloCode, GitHub Copilot, Windsurf, and Antigravity
+- 🌡️ **Creativity Temperature** - Adjust complexity level (1-10)
+- 🌍 **Multi-Language Output** - Generate prompts in 12 different languages
+- 💾 **Secure API Management** - Your API key is stored locally in your browser
+- 📋 **Easy Copy** - One-click prompt copying
+- 💫 **Framer Motion Animations** - Smooth user experience
+- 📥 **Download Prompts** - Save prompts as text files
+
+### 🛠️ Tech Stack
+
+| Technology | Version | Purpose |
+|------------|---------|---------|
+| React | 18.3.1 | UI Library |
+| Vite | 5.4.11 | Build Tool |
+| Tailwind CSS | 3.4.17 | Styling Framework |
+| Framer Motion | 11.15.0 | Animations |
+| Google Generative AI | 0.21.0 | Gemini API Integration |
+| Lucide React | 0.469.0 | Icons |
+
+### 🎨 Theme Colors
+
+| Color | Hex Code | Usage |
+|-------|----------|-------|
+| Background | `#0B0C10` | Main background |
+| Card | `#1F2833` | Card backgrounds |
+| Neon Cyan | `#66FCF1` | Accent color |
+| Dark Cyan | `#45A29E` | Secondary accent |
+| Primary Text | `#C5C6C7` | Headings and text |
+
+### 🚀 Getting Started
+
+#### Prerequisites
+
+- Node.js 18+
+- Google AI Studio API Key (Free)
+
+#### Installation
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/umutardaayhan/PromptNexus.git
+   cd PromptNexus
+   ```
+
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+
+3. **Start the development server:**
+   ```bash
+   npm run dev
+   ```
+
+4. **Open in browser:**
+   ```
+   http://localhost:3000
+   ```
+
+#### Getting an API Key
+
+1. Go to [Google AI Studio](https://aistudio.google.com/app/apikey)
+2. Click "Create API Key" button
+3. Generate a new API key
+4. Paste it in the "Settings" section of the PromptNexus app
+
+### 📁 Project Structure
+
+```
+PromptNexus/
+├── src/
+│   ├── components/          # React components
+│   │   ├── Header.jsx       # Top navigation
+│   │   ├── HeroSection.jsx  # Hero section
+│   │   ├── InputLaboratory.jsx  # Input form
+│   │   ├── ComplexitySlider.jsx # Complexity slider
+│   │   ├── ResultTerminal.jsx   # Result terminal
+│   │   ├── SettingsModal.jsx    # Settings modal
+│   │   ├── Toast.jsx        # Notifications
+│   │   └── Footer.jsx       # Footer
+│   ├── hooks/
+│   │   └── useLocalStorage.js   # localStorage hook
+│   ├── services/
+│   │   └── geminiService.js     # Gemini API service
+│   ├── App.jsx              # Main application
+│   ├── main.jsx             # Entry point
+│   └── index.css            # Global styles
+├── index.html
+├── package.json
+├── vite.config.js
+├── tailwind.config.js
+└── README.md
+```
+
+### 🔒 Security
+
+- Your API key is stored **only** in your browser's `localStorage`
+- The key is never sent to any server; requests go directly to the Gemini API
+- No API keys are hardcoded in the code
+
+### 📝 Usage
+
+1. **Enter API Key:** Click the "Settings" button in the top right to enter your API key
+2. **Write Your Topic:** Describe what you want to create a prompt about
+3. **Select Target AI:** Choose which AI model to optimize for
+4. **Adjust Temperature:** Set the complexity level (1-10)
+5. **Select Output Language:** Choose the language for the generated prompt
+6. **Generate:** Click the "Generate Prompt" button
+7. **Copy:** Copy the result with one click or download as a file
+
+### 🤝 Contributing
+
+Contributions are welcome! Please open an issue first to discuss changes.
+
+---
+
+## 🇹🇷 Türkçe
+
+**Gemini Destekli AI Prompt Oluşturucu**
+
+PromptNexus, fikirlerinizi profesyonel, optimize edilmiş AI komutlarına dönüştüren modern bir web uygulamasıdır. Google'ın Gemini 2.5 Flash modelini kullanarak yüksek kaliteli promptlar oluşturur.
+
+### 🚀 v1.0 Özellikleri
+
+- 🤖 **Gemini 2.5 Flash Entegrasyonu** - Güçlü Google AI modeli desteği
+- 🎨 **Derin Uzay Teması** - Modern, koyu tema ile göz yormayan arayüz
+- ⚡ **Hızlı ve Duyarlı** - Anında prompt oluşturma
+- 🎯 **Çoklu AI Desteği** - ChatGPT, Claude, Midjourney, DALL-E ve Gemini için optimize
+- 💻 **IDE Agent Desteği** - Cursor, KiloCode, GitHub Copilot, Windsurf ve Antigravity için özel destek
+- 🌡️ **Yaratıcı Sıcaklık** - Karmaşıklık seviyesini ayarlama (1-10)
+- 🌍 **Çoklu Dil Çıktısı** - 12 farklı dilde prompt oluşturma
+- 💾 **Güvenli API Yönetimi** - API anahtarınız tarayıcınızda yerel saklanır
+- 📋 **Kolay Kopyalama** - Tek tıkla prompt kopyalama
+- 💫 **Framer Motion Animasyonları** - Akıcı kullanıcı deneyimi
+- 📥 **Prompt İndirme** - Promptları metin dosyası olarak kaydetme
+
+### 🛠️ Teknolojiler
+
+| Teknoloji | Versiyon | Amaç |
+|-----------|----------|------|
+| React | 18.3.1 | UI Kütüphanesi |
+| Vite | 5.4.11 | Build Aracı |
+| Tailwind CSS | 3.4.17 | Stil Framework'ü |
+| Framer Motion | 11.15.0 | Animasyonlar |
+| Google Generative AI | 0.21.0 | Gemini API Entegrasyonu |
+| Lucide React | 0.469.0 | İkonlar |
+
+### 🎨 Tema Renkleri
+
+| Renk | Hex Kodu | Kullanım |
+|------|----------|----------|
+| Arka Plan | `#0B0C10` | Ana arka plan |
+| Kart | `#1F2833` | Kart arka planları |
+| Neon Camgöbeği | `#66FCF1` | Vurgu rengi |
+| Koyu Camgöbeği | `#45A29E` | İkincil vurgu |
+| Ana Metin | `#C5C6C7` | Başlıklar ve metin |
+
+### 🚀 Başlangıç
+
+#### Gereksinimler
+
+- Node.js 18+
+- Google AI Studio API Anahtarı (Ücretsiz)
+
+#### Kurulum
+
+1. **Projeyi klonlayın:**
+   ```bash
+   git clone https://github.com/umutardaayhan/PromptNexus.git
+   cd PromptNexus
+   ```
+
+2. **Bağımlılıkları yükleyin:**
+   ```bash
+   npm install
+   ```
+
+3. **Geliştirme sunucusunu başlatın:**
+   ```bash
+   npm run dev
+   ```
+
+4. **Tarayıcıda açın:**
+   ```
+   http://localhost:3000
+   ```
+
+#### API Anahtarı Alma
+
+1. [Google AI Studio](https://aistudio.google.com/app/apikey)'ya gidin
+2. "Create API Key" butonuna tıklayın
+3. Yeni bir API anahtarı oluşturun
+4. PromptNexus uygulamasında "Ayarlar" bölümüne yapıştırın
+
+### 📁 Proje Yapısı
+
+```
+PromptNexus/
+├── src/
+│   ├── components/          # React bileşenleri
+│   │   ├── Header.jsx       # Üst navigasyon
+│   │   ├── HeroSection.jsx  # Kahraman bölümü
+│   │   ├── InputLaboratory.jsx  # Giriş formu
+│   │   ├── ComplexitySlider.jsx # Karmaşıklık kaydırıcısı
+│   │   ├── ResultTerminal.jsx   # Sonuç terminali
+│   │   ├── SettingsModal.jsx    # Ayarlar modalı
+│   │   ├── Toast.jsx        # Bildirimler
+│   │   └── Footer.jsx       # Alt bilgi
+│   ├── hooks/
+│   │   └── useLocalStorage.js   # localStorage hook'u
+│   ├── services/
+│   │   └── geminiService.js     # Gemini API servisi
+│   ├── App.jsx              # Ana uygulama
+│   ├── main.jsx             # Giriş noktası
+│   └── index.css            # Global stiller
+├── index.html
+├── package.json
+├── vite.config.js
+├── tailwind.config.js
+└── README.md
+```
+
+### 🔒 Güvenlik
+
+- API anahtarınız **sadece** tarayıcınızın `localStorage`'ında saklanır
+- Anahtar hiçbir sunucuya gönderilmez, doğrudan Gemini API'ye istek yapılır
+- Hiçbir API anahtarı kodda sabit olarak yazılmamıştır
+
+### 📝 Kullanım
+
+1. **API Anahtarı Girin:** Sağ üstteki "Ayarlar" butonuna tıklayarak API anahtarınızı girin
+2. **Konunuzu Yazın:** Ne hakkında prompt oluşturmak istediğinizi açıklayın
+3. **Hedef AI Seçin:** Hangi AI modeli için optimize edileceğini seçin
+4. **Sıcaklık Ayarlayın:** Karmaşıklık seviyesini (1-10) ayarlayın
+5. **Çıktı Dilini Seçin:** Oluşturulan promptun dilini seçin
+6. **Oluşturun:** "Prompt Oluştur" butonuna tıklayın
+7. **Kopyalayın:** Sonucu tek tıkla kopyalayın veya dosya olarak indirin
+
+### 🤝 Katkıda Bulunma
+
+Katkılarınızı bekliyoruz! Lütfen önce bir issue açarak değişiklikleri tartışın.
+
+---
+
+## 📄 License / Lisans
+
+This project is licensed under the MIT License. / Bu proje MIT lisansı altında lisanslanmıştır.
+
+---
+
+<p align="center">
+  <sub>Made with ❤️ by <a href="https://github.com/umutardaayhan">@umutardaayhan</a></sub>
+</p>
+<p align="center">
+  <sub>PromptNexus ⚡ 2025</sub>
+</p>

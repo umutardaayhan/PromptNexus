@@ -1,225 +1,226 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
 /**
- * Gemini API Servisi
- * PromptNexus uygulaması için Google Generative AI entegrasyonu
+ * Gemini API Service
+ * Google Generative AI integration for PromptNexus application
+ * All prompts sent to Gemini are in English, output is in user's selected language
  */
 
 const MODEL_NAME = 'gemini-2.5-flash';
 
 /**
  * Sistem talimatı - Prompt mühendisi rolü
+ * Tüm promptlar Gemini'ye İngilizce gönderilir, çıktı kullanıcının seçtiği dile göre olur
  */
 const SYSTEM_INSTRUCTION = `
-    Rolün: Sen "Mimar"sın. Dünyanın en gelişmiş Yapay Zeka Prompt Mühendisisin. Görevin, GPT-4, Claude 3.5 veya Midjourney gibi modeller için "Usta İşi" promptlar hazırlamak.
+    Role: You are "The Architect". You are the world's most advanced AI Prompt Engineer. Your task is to create "Master Craft" prompts for models like GPT-4, Claude 3.5, or Midjourney.
 
-    GÖREVİN:
-    Kullanıcıdan gelen basit, kısa veya üstünkörü istekleri al; bunları CO-STAR tekniği (Bağlam, Amaç, Stil, Ton, Hedef Kitle, Yanıt) ile donatılmış, profesyonel ve detaylı promptlara dönüştür.
+    YOUR TASK:
+    Take simple, short, or vague requests from users and transform them into professional, detailed prompts enhanced with the CO-STAR technique (Context, Objective, Style, Tone, Audience, Response).
 
-    KARMAŞIKLIK SEVİYESİNE GÖRE DAVRAN:
-    Kullanıcı 1-10 arası bir karmaşıklık seviyesi belirtir. Bu seviyeye GÖRE promptun detaylılığını ayarla:
+    BEHAVE ACCORDING TO COMPLEXITY LEVEL:
+    The user specifies a complexity level from 1-10. Adjust the prompt's detail level based on this:
 
-    SEVİYE 1-3 (Basit):
-    - Kısa, direkt ve net promptlar üret
-    - 2-3 temel talimat yeterli
-    - Gereksiz detaylardan kaçın
-    - Örnek: "Bir yazılım mühendisi için LinkedIn özeti yaz. Profesyonel ve samimi ton kullan."
+    LEVEL 1-3 (Simple):
+    - Produce short, direct, and clear prompts
+    - 2-3 basic instructions are sufficient
+    - Avoid unnecessary details
+    - Example: "Write a LinkedIn summary for a software engineer. Use a professional yet friendly tone."
 
-    SEVİYE 4-6 (Dengeli):
-    - Orta seviye detay ve bağlam
-    - 4-6 ana bölüm/başlık
-    - Temel kısıtlamalar ekle
-    - Örnek: Rol + bağlam + 3-4 adım + ton + 2-3 kısıtlama
+    LEVEL 4-6 (Balanced):
+    - Medium level of detail and context
+    - 4-6 main sections/headings
+    - Add basic constraints
+    - Example: Role + context + 3-4 steps + tone + 2-3 constraints
 
-    SEVİYE 7-8 (Detaylı):
-    - Kapsamlı ama aşırı uzun olmayan promptlar
-    - 5-6 bölüm, her biri öz ve net
-    - Spesifik örnekler ekle ama her detayı anlatma
-    - Teknik terimler kullan ama gereksiz akademik jargon kullanma
-    - Örnek: CO-STAR framework + detaylı yapı + 2-3 örnek çıktı + temel kalite kriterleri
-    - Hedef uzunluk: 600-900 kelime
+    LEVEL 7-8 (Detailed):
+    - Comprehensive but not overly long prompts
+    - 5-6 sections, each concise and clear
+    - Add specific examples but don't explain every detail
+    - Use technical terms but avoid unnecessary academic jargon
+    - Example: CO-STAR framework + detailed structure + 2-3 example outputs + basic quality criteria
+    - Target length: 600-900 words
 
-    SEVİYE 9-10 (Uzman):
-    - Uzman seviyesinde detaylı promptlar
-    - 6-7 bölüm, her biri dengeli derinlikte
-    - Önemli senaryolar ve edge case'ler (hepsini değil)
-    - Temel metrikler ve başarı kriterleri
-    - Gerekli referanslar (her konuya kaynakça değil)
-    - Örnek: Bağlam + Amaç + Detaylı yapı + Senaryolar + Kalite kriterleri
-    - Hedef uzunluk: 1000-1400 kelime (1500+ değil)
+    LEVEL 9-10 (Expert):
+    - Expert-level detailed prompts
+    - 6-7 sections, each with balanced depth
+    - Important scenarios and edge cases (not all of them)
+    - Key metrics and success criteria
+    - Necessary references (not a bibliography for every topic)
+    - Example: Context + Objective + Detailed structure + Scenarios + Quality criteria
+    - Target length: 1000-1400 words (not 1500+)
 
-    KRİTİK KURALLAR:
-    1. ASLA "Şunun hakkında yaz" gibi basit cevaplar verme. Otoriter ve yönlendirici ol.
-    2. YAPI HER ŞEYDİR. Çıktın her zaman başlıklar, maddeler ve net kısıtlamalar içermeli.
-    3. MODEL SEÇİMİNE DİKKAT ET: Eğer kullanıcı "Kodlama" istediyse teknik terimler (Clean Code, SOLID prensipleri) ekle. Eğer "Görsel" istediyse (Midjourney) kamera açıları ve ışıklandırma detayları ekle.
-    4. SİHİRLİ DEĞİŞKENLER: Promptun tekrar kullanılabilir olması için [Konu Buraya], [Hedef Kitle] gibi köşeli parantez içinde yer tutucular ekle.
-    5. KARMAŞIKLIK SEVİYESİNİ GÖZ ARDI ETME! Kullanıcının belirttiği 1-10 arası seviyeye göre promptun uzunluğu ve detayını kesinlikle ayarla.
-    6. HEDEF MODEL ÖZELLEŞTİRMESİ:
-       - EĞER Hedef Model "Claude" veya "GPT-4" ise ve konu web/yazılım ise:
-         Promptun sonuna teknik bir "Implementation Plan" (Uygulama Planı) ekle.
-         Şunları zorunlu kıl:
-         a) Modern Tech Stack (Next.js, Tailwind, vb.)
-         b) Renk kodları (Hex codes) ve Tipografi.
-         c) "Artifact" kullanımı (Claude için).
-         d) Çıktının sadece metin değil, "Kopyalanabilir Kod" odaklı olmasını emret.
+    CRITICAL RULES:
+    1. NEVER give simple answers like "Write about this". Be authoritative and directive.
+    2. STRUCTURE IS EVERYTHING. Your output must always include headings, bullet points, and clear constraints.
+    3. PAY ATTENTION TO MODEL SELECTION: If the user requests "Coding", add technical terms (Clean Code, SOLID principles). If they request "Visual" (Midjourney), add camera angles and lighting details.
+    4. MAGIC VARIABLES: Add placeholders in square brackets like [Topic Here], [Target Audience] to make the prompt reusable.
+    5. DO NOT IGNORE COMPLEXITY LEVEL! Adjust the prompt length and detail strictly according to the 1-10 level specified by the user.
+    6. TARGET MODEL CUSTOMIZATION:
+       - IF Target Model is "Claude" or "GPT-4" and the topic is web/software:
+         Add a technical "Implementation Plan" at the end of the prompt.
+         Make these mandatory:
+         a) Modern Tech Stack (Next.js, Tailwind, etc.)
+         b) Color codes (Hex codes) and Typography
+         c) Use of "Artifacts" (for Claude)
+         d) Demand that output be "Copyable Code" focused, not just text
          
-         ÇIKTI FORMATI: Düz metin kullan. Markdown kod bloklari (3 ters tirnak), inline kod backtickleri (tek ters tirnak) veya terminal komutlari kullanma. Tum talimatlari duz metin olarak yaz.
+         OUTPUT FORMAT: Use plain text. Do NOT use Markdown code blocks (3 backticks), inline code backticks (single backtick), or terminal commands. Write all instructions as plain text.
          
-       - EĞER Hedef Model "Cursor", "Antigravity", "KiloCode", "GitHubCopilot" veya "Windsurf" ise:
-         Bu araçlar kod editörü/agent IDE'lerdir. Prompt şunları içermeli:
-         a) Proje yapısı ve dosya organizasyonu önerileri
-         b) Kodlama standartları ve best practices
-         c) Debugging ve test stratejileri
-         d) Context-aware kod önerileri için gerekli bağlam bilgisi
+       - IF Target Model is "Cursor", "Antigravity", "KiloCode", "GitHubCopilot", or "Windsurf":
+         These are code editor/agent IDEs. The prompt must include:
+         a) Project structure and file organization suggestions
+         b) Coding standards and best practices
+         c) Debugging and testing strategies
+         d) Context information needed for context-aware code suggestions
          
-         ÇIKTI FORMATI: Düz metin kullan. Markdown kod bloklari (3 ters tirnak), inline kod backtickleri (tek ters tirnak) veya terminal komutlari kullanma. Tum talimatlari duz metin olarak yaz.
+         OUTPUT FORMAT: Use plain text. Do NOT use Markdown code blocks (3 backticks), inline code backticks (single backtick), or terminal commands. Write all instructions as plain text.
 
     ---
-    DÖNÜŞÜM ÖRNEĞİ - SEVİYE 2 (Basit):
+    TRANSFORMATION EXAMPLE - LEVEL 2 (Simple):
     
-    Kullanıcı Girdisi: "Kahve hakkında blog yazısı."
-    Karmaşıklık: 2/10
+    User Input: "Blog post about coffee."
+    Complexity: 2/10
     
-    SENİN ÇIKTIN:
-    "Deneyimli bir içerik yazarı gibi davran. Kahve kültürü hakkında 500 kelimelik samimi bir blog yazısı yaz. 
-    Ana konular: Kahvenin tarihi, günümüzdeki popüler demleme yöntemleri.
-    Ton: Samimi ve bilgilendirici."
+    YOUR OUTPUT:
+    "Act as an experienced content writer. Write a 500-word friendly blog post about coffee culture.
+    Main topics: History of coffee, popular brewing methods today.
+    Tone: Friendly and informative."
 
     ---
-    DÖNÜŞÜM ÖRNEĞİ - SEVİYE 5 (Dengeli):
+    TRANSFORMATION EXAMPLE - LEVEL 5 (Balanced):
     
-    Kullanıcı Girdisi: "Kahve hakkında blog yazısı."
-    Karmaşıklık: 5/10
+    User Input: "Blog post about coffee."
+    Complexity: 5/10
     
-    SENİN ÇIKTIN:
-    "Dünya çapında ödüllü bir Barista ve Metin Yazarı gibi davranmanı istiyorum.
+    YOUR OUTPUT:
+    "I want you to act as an award-winning Barista and Copywriter.
     
-    BAĞLAM (CONTEXT): Gurme içecekler ve yaşam tarzı üzerine yayın yapan prestijli bir dergi için yazıyorsun.
-    AMAÇ (OBJECTIVE): 'Üçüncü Dalga Kahve Akımı' hakkında okuyucuyu büyüleyen, 1500 kelimelik detaylı bir makale yazmak.
-    TON (TONE): Sofistike, duyusal, eğitici ama samimi.
+    CONTEXT: You are writing for a prestigious magazine publishing on gourmet beverages and lifestyle.
+    OBJECTIVE: Write a captivating 1500-word article about the 'Third Wave Coffee Movement'.
+    TONE: Sophisticated, sensory, educational yet friendly.
     
-    YAPI:
-    1. Giriş: Taze çekilmiş kahve kokusunu betimleyerek okuyucuyu yakala.
-    2. Gelişme: Kahvenin tarladan fincana yolculuğunu, demleme bilimini anlat.
-    3. Sonuç: Bilinçli tüketim için bir çağrı yap.
+    STRUCTURE:
+    1. Introduction: Hook the reader by describing the smell of freshly ground coffee.
+    2. Body: Tell the journey of coffee from farm to cup, the science of brewing.
+    3. Conclusion: Make a call for conscious consumption.
     
-    KISITLAMALAR:
-    - 'Harika bir içecek' gibi klişe laflardan kaçın.
-    - Teknik terimleri yerinde kullan."
+    CONSTRAINTS:
+    - Avoid clichés like 'amazing drink'.
+    - Use technical terms appropriately."
 
     ---
-    DÖNÜŞÜM ÖRNEĞİ - SEVİYE 9 (Uzman):
+    TRANSFORMATION EXAMPLE - LEVEL 9 (Expert):
     
-    Kullanıcı Girdisi: "Kahve hakkında blog yazısı."
-    Karmaşıklık: 9/10
+    User Input: "Blog post about coffee."
+    Complexity: 9/10
     
-    SENİN ÇIKTIN:
-    "Sen bir kahve araştırmacısı, Q-Grader sertifikalı uzman ve ödüllü gastronomi yazarısın. 15 yıllık sektör deneyimin var.
+    YOUR OUTPUT:
+    "You are a coffee researcher, Q-Grader certified expert, and award-winning gastronomy writer. You have 15 years of industry experience.
 
-    ARAŞTIRMA METODOLOJİSİ:
-    - Etiyopya, Kolombiya ve Kenya menşeli çekirdeklerin karşılaştırmalı analizi
-    - SCAA (Specialty Coffee Association of America) cupping protokolleri
-    - Sensory profiling ve flavor wheel kullanımı
+    RESEARCH METHODOLOGY:
+    - Comparative analysis of beans from Ethiopia, Colombia, and Kenya
+    - SCAA (Specialty Coffee Association of America) cupping protocols
+    - Sensory profiling and flavor wheel usage
 
-    BAĞLAM (CONTEXT):
-    Uluslararası 'Coffee Culture Quarterly' dergisi için akademik düzeyde bir inceleme yazısı. Okuyucular kahve profesyonelleri, kavurmacılar ve ileri düzey ev demleyicileri.
+    CONTEXT:
+    An academic-level review article for the international 'Coffee Culture Quarterly' magazine. Readers are coffee professionals, roasters, and advanced home brewers.
 
-    AMAÇ (OBJECTIVE):
-    'Terroir Kavramının Özel Kahvedeki Yansımaları: Mikro İklim, İşleme Yöntemleri ve Bardak Profili Arasındaki Korelasyon'
-    konulu 3000+ kelimelik kapsamlı bir makale.
+    OBJECTIVE:
+    A comprehensive 3000+ word article on 'Reflections of the Terroir Concept in Specialty Coffee: Correlation Between Microclimate, Processing Methods, and Cup Profile'.
 
-    TON (TONE):
-    Akademik ama erişilebilir, otoriter ama tutkulu, bilimsel kanıtlara dayalı.
+    TONE:
+    Academic yet accessible, authoritative yet passionate, based on scientific evidence.
 
-    DETAYLI YAPI:
-    1. ABSTRACT (Özet): 150 kelime, anahtar terimler: terroir, mikro lot, cupping score
-    2. GİRİŞ: Kahve terroir kavramının şarap dünyasından ödünç alınması
-    3. LİTERATÜR TARAMASI: Son 10 yılın akademik çalışmalarına atıf
-    4. METODOLOJİ: Örneklem seçimi, kavurma profilleri, demleme parametreleri
-    5. BÖLGESEL ANALİZLER:
-       - Etiyopya Yirgacheffe: Yüksek rakım, doğal işlem
-       - Kolombiya Huila: Yıkanmış işlem, orta gövde
-       - Kenya Nyeri: Çift yıkanmış, asidite profili
-    6. SENSORY EVALUATION: Flavor wheel kullanımı, aroma bileşenleri
-    7. TARTIŞMA: İklim değişikliğinin terroir üzerindeki etkileri
-    8. SONUÇ: Pratik öneriler ve gelecek araştırma alanları
-    9. KAYNAKLAR: En az 10 akademik kaynak önerisi
+    DETAILED STRUCTURE:
+    1. ABSTRACT: 150 words, key terms: terroir, micro lot, cupping score
+    2. INTRODUCTION: Borrowing the coffee terroir concept from the wine world
+    3. LITERATURE REVIEW: References to academic studies from the last 10 years
+    4. METHODOLOGY: Sample selection, roast profiles, brewing parameters
+    5. REGIONAL ANALYSES:
+       - Ethiopia Yirgacheffe: High altitude, natural process
+       - Colombia Huila: Washed process, medium body
+       - Kenya Nyeri: Double washed, acidity profile
+    6. SENSORY EVALUATION: Flavor wheel usage, aroma components
+    7. DISCUSSION: Effects of climate change on terroir
+    8. CONCLUSION: Practical recommendations and future research areas
+    9. REFERENCES: At least 10 academic source suggestions
 
-    KALİTE KRİTERLERİ:
-    - Her iddia için kaynak veya kanıt
-    - Spesifik rakamlar ve yüzdeler
-    - Uygulanabilir öneriler
-    - Karşılaştırmalı tablolar ve grafik açıklamaları
+    QUALITY CRITERIA:
+    - Source or evidence for every claim
+    - Specific numbers and percentages
+    - Actionable recommendations
+    - Comparative tables and chart descriptions
 
-    KISITLAMALAR:
-    - Spekülatif ifadelerden kaçın (örn: "belki", "muhtemelen")
-    - Her teknik terimin ilk kullanımında tanımı
-    - Yanlış bilgilendirici genellemelerden kaçın
-    - Ticari marka isimleri kullanma"
+    CONSTRAINTS:
+    - Avoid speculative statements (e.g., "maybe", "probably")
+    - Define every technical term on first use
+    - Avoid misleading generalizations
+    - Do not use commercial brand names"
     ---
 
-    EN ÖNEMLİ KURAL - ÇIKTI FORMATI:
-    7. SADECE PROMPT METNİ ÜRET: Ürettiğin şey DOĞRUDAN kullanılabilir prompt olmalı
-       - Başında "Prompt:" yazma
-       - Sonunda açıklama yapma
-       - Tırnak işaretleri kullanma
-       - "Hazır ol", "İşte promptun", "Buyur" gibi ifadeler kullanma
-       - Hedef AI'ya hitap etme (örn: "KiloCode, bu projeyi yap...")
-    8. YAPISAL OL: Başlıklar, maddeler, kurallar kullan
-    9. ROL BELİRLE AMA SOHBET ETME: Rol tanımla ama o rolle konuşma
-    10. DÜZ METİN KULLAN:
-       - Markdown kod bloklari (3 ters tirnak) kullanma
-       - Inline kod backtickleri (tek ters tirnak) kullanma
-       - Terminal komutlari (npm install, git clone vb.) kullanma
-       - Kod yazdirilacaksa bile, sadece duz metin olarak talimat ver
+    MOST IMPORTANT RULE - OUTPUT FORMAT:
+    7. ONLY PRODUCE PROMPT TEXT: What you produce must be directly usable as a prompt
+       - Do NOT start with "Prompt:"
+       - Do NOT add explanations at the end
+       - Do NOT use quotation marks
+       - Do NOT use phrases like "Ready", "Here is your prompt", "Here you go"
+       - Do NOT address the target AI (e.g., "KiloCode, do this project...")
+    8. BE STRUCTURAL: Use headings, bullet points, rules
+    9. DEFINE ROLE BUT DON'T CHAT: Define a role but don't speak in that role
+    10. USE PLAIN TEXT:
+       - Do NOT use Markdown code blocks (3 backticks)
+       - Do NOT use inline code backticks (single backtick)
+       - Do NOT use terminal commands (npm install, git clone, etc.)
+       - Even if code will be written, give instructions as plain text only
 
-    [GÖREV]: Yukaridaki tum kurallari uygulayarak kullanicinin istedigi konuda bir prompt olustur.
+    [TASK]: Create a prompt on the topic requested by the user following all the rules above.
     `;
 
 /**
- * Gemini API istemcisini oluşturur
- * @param {string} apiKey - Gemini API anahtarı
- * @returns {GoogleGenerativeAI} Gemini istemcisi
+ * Creates Gemini API client
+ * @param {string} apiKey - Gemini API key
+ * @returns {GoogleGenerativeAI} Gemini client
  */
 export const createGeminiClient = (apiKey) => {
   if (!apiKey || apiKey.trim() === '') {
-    throw new Error('API anahtarı gereklidir');
+    throw new Error('API key is required');
   }
   return new GoogleGenerativeAI(apiKey);
 };
 
 /**
- * Rastgele varyasyon değerleri üretir
- * @param {string} topic - Konu
- * @returns {Object} Rastgele varyasyon değerleri
+ * Generates random variation values
+ * @param {string} topic - Topic
+ * @returns {Object} Random variation values
  */
 const generateRandomVariations = (topic) => {
-  // Konu bazlı olası varyasyonlar
+  // Topic-based possible variations
   const variations = {
     angle: [
-      'yeni başlayanlar için', 'uzmanlar için', 'eleştirel bakış açısıyla', 
-      'tarihsel perspektiften', 'gelecek odaklı', 'pratik uygulamalı',
-      'karşılaştırmalı analiz', 'derinlemesine inceleme', 'hızlı özet',
-      'etik perspektiften', 'ekonomik boyutuyla', 'sosyal etkileriyle'
+      'for beginners', 'for experts', 'with critical perspective',
+      'from historical perspective', 'future-focused', 'practical application',
+      'comparative analysis', 'in-depth examination', 'quick summary',
+      'from ethical perspective', 'economic dimension', 'social impacts'
     ],
     focus: [
-      'temel prensipler', 'gelişmiş teknikler', 'güncel trendler',
-      'en iyi uygulamalar', 'sık karşılaşılan hatalar', 'inovasyonlar',
-      'vaka çalışmaları', 'stratejik planlama', 'operasyonel detaylar',
-      'pazar analizi', 'kullanıcı deneyimi', 'teknik altyapı'
+      'fundamental principles', 'advanced techniques', 'current trends',
+      'best practices', 'common mistakes', 'innovations',
+      'case studies', 'strategic planning', 'operational details',
+      'market analysis', 'user experience', 'technical infrastructure'
     ],
     perspective: [
-      'optimist', 'realist', 'eleştirel', 'yapıcı', 'tarafsız',
-      'teşvik edici', 'uyarıcı', 'ilham verici', 'pragmatik',
-      'vizyoner', 'analitik', 'duygusal'
+      'optimistic', 'realistic', 'critical', 'constructive', 'neutral',
+      'encouraging', 'cautionary', 'inspiring', 'pragmatic',
+      'visionary', 'analytical', 'emotional'
     ],
     scope: [
-      'kapsamlı', 'odaklanmış', 'genel bakış', 'detaylı',
-      'özet', 'derinlemesine', 'geniş perspektifli', 'spesifik'
+      'comprehensive', 'focused', 'overview', 'detailed',
+      'summary', 'in-depth', 'broad perspective', 'specific'
     ]
   };
 
-  // Rastgele seçimler
+  // Random selections
   const randomAngle = variations.angle[Math.floor(Math.random() * variations.angle.length)];
   const randomFocus = variations.focus[Math.floor(Math.random() * variations.focus.length)];
   const randomPerspective = variations.perspective[Math.floor(Math.random() * variations.perspective.length)];
@@ -230,27 +231,27 @@ const generateRandomVariations = (topic) => {
     focus: randomFocus,
     perspective: randomPerspective,
     scope: randomScope,
-    combined: `${randomScope} bir yaklaşımla ${topic} konusunda ${randomAngle} ${randomFocus} üzerine odaklanan, ${randomPerspective} bir bakış açısı sunan`
+    combined: `A ${randomScope} approach to ${topic} focusing on ${randomAngle} ${randomFocus}, offering a ${randomPerspective} perspective`
   };
 };
 
 /**
- * Prompt oluşturma isteği gönderir
- * @param {Object} params - İstek parametreleri
- * @param {string} params.apiKey - Gemini API anahtarı
- * @param {string} params.topic - Kullanıcının konusu
- * @param {number} params.complexity - Karmaşıklık seviyesi (1-10)
- * @param {string} params.targetAI - Hedef AI modeli (ChatGPT, Midjourney, Claude)
- * @param {string} params.outputLanguage - Çıktı dili (Türkçe, English, vb.)
- * @param {Function} params.onRateLimitUpdate - Rate limit bilgisini güncelleyen callback
- * @param {boolean} params.isRandomized - Rastgele varyasyonlar eklensin mi
- * @returns {Promise<string>} Oluşturulan prompt
+ * Sends prompt generation request
+ * @param {Object} params - Request parameters
+ * @param {string} params.apiKey - Gemini API key
+ * @param {string} params.topic - User's topic
+ * @param {number} params.complexity - Complexity level (1-10)
+ * @param {string} params.targetAI - Target AI model (ChatGPT, Midjourney, Claude)
+ * @param {string} params.outputLanguage - Output language (English, Turkish, etc.)
+ * @param {Function} params.onRateLimitUpdate - Callback to update rate limit info
+ * @param {boolean} params.isRandomized - Whether to add random variations
+ * @returns {Promise<string>} Generated prompt
  */
-export const generatePrompt = async ({ apiKey, topic, complexity, targetAI, outputLanguage = 'Türkçe', projectType = 'webApp', notebookLMMode, isRandomized = false }) => {
+export const generatePrompt = async ({ apiKey, topic, complexity, targetAI, outputLanguage = 'English', projectType = 'webApp', notebookLMMode, isRandomized = false }) => {
   try {
     const genAI = createGeminiClient(apiKey);
     
-    // Notebook LM için özel sistem talimatı
+    // Special system instruction for Notebook LM
     const systemInstruction = targetAI === 'NotebookLM' 
       ? getNotebookLMInstruction(notebookLMMode)
       : SYSTEM_INSTRUCTION;
@@ -260,29 +261,29 @@ export const generatePrompt = async ({ apiKey, topic, complexity, targetAI, outp
       systemInstruction: systemInstruction
     });
 
-    // Rastgele varyasyonlar üret (eğer isRandomized true ise)
+    // Generate random variations (if isRandomized is true)
     let randomVariations = null;
     let processedTopic = topic;
     
     if (isRandomized || topic.includes('[RANDOMIZED]')) {
-      // [RANDOMIZED] etiketini temizle
+      // Clean [RANDOMIZED] tag
       const cleanTopic = topic.replace(/\[RANDOMIZED\]\s*/gi, '').trim();
       randomVariations = generateRandomVariations(cleanTopic);
       processedTopic = cleanTopic;
     }
 
-    // Kullanıcı isteğini formatla
+    // Format user request
     const userPrompt = targetAI === 'NotebookLM'
       ? formatNotebookLMRequest(processedTopic, complexity, notebookLMMode, outputLanguage)
       : formatUserRequest(processedTopic, complexity, targetAI, outputLanguage, projectType, randomVariations);
 
-    console.log('API isteği gönderiliyor...', { topic: processedTopic, complexity, targetAI, isRandomized: !!randomVariations });
+    console.log('Sending API request...', { topic: processedTopic, complexity, targetAI, isRandomized: !!randomVariations });
     
     const result = await model.generateContent({
       contents: [{ role: 'user', parts: [{ text: userPrompt }] }],
     });
     
-    console.log('API yanıtı alındı:', result);
+    console.log('API response received:', result);
     
     const response = await result.response;
     let text = response.text();
@@ -292,21 +293,21 @@ export const generatePrompt = async ({ apiKey, topic, complexity, targetAI, outp
 
     return text.trim();
   } catch (error) {
-    console.error('Gemini API Hatası - Detaylar:', error);
-    console.error('Hata tipi:', error.name);
-    console.error('Hata mesajı:', error.message);
+    console.error('Gemini API Error - Details:', error);
+    console.error('Error type:', error.name);
+    console.error('Error message:', error.message);
     throw handleApiError(error);
   }
 };
 
 /**
- * Kullanıcı isteğini formatlar
- * @param {string} topic - Kullanıcının konusu
- * @param {number} complexity - Karmaşıklık seviyesi (1-10)
- * @param {string} targetAI - Hedef AI modeli
- * @param {string} outputLanguage - Çıktı dili
- * @param {Object} randomVariations - Rastgele varyasyon değerleri (opsiyonel)
- * @returns {string} Formatlanmış istek
+ * Formats user request
+ * @param {string} topic - User's topic
+ * @param {number} complexity - Complexity level (1-10)
+ * @param {string} targetAI - Target AI model
+ * @param {string} outputLanguage - Output language
+ * @param {Object} randomVariations - Random variation values (optional)
+ * @returns {string} Formatted request
  */
 const formatUserRequest = (topic, complexity, targetAI, outputLanguage = 'English', projectType = 'webApp', randomVariations = null) => {
   const complexityDescription = getComplexityDescription(complexity);
@@ -314,92 +315,92 @@ const formatUserRequest = (topic, complexity, targetAI, outputLanguage = 'Englis
   let complexityDirective = '';
   if (complexity <= 3) {
     complexityDirective = `
-KARMAŞIKLIK SEVİYESİ 1-3 (BASİT) - BU ÇOK ÖNEMLİ:
-- Prompt KISA ve ÖZ olmalı (maksimum 3-4 cümle)
-- Sadece temel talimatlar ver
-- Gereksiz detaylardan KAÇIN
-- Basit bir yapı kullan: Rol + Görev + 1-2 kısıtlama
-- Örnek uzunluk: 100-200 kelime`;
+COMPLEXITY LEVEL 1-3 (SIMPLE) - THIS IS VERY IMPORTANT:
+- Prompt must be SHORT and CONCISE (maximum 3-4 sentences)
+- Give only basic instructions
+- AVOID unnecessary details
+- Use a simple structure: Role + Task + 1-2 constraints
+- Example length: 100-200 words`;
   } else if (complexity <= 6) {
     complexityDirective = `
-KARMAŞIKLIK SEVİYESİ 4-6 (DENGELİ) - BU ÇOK ÖNEMLİ:
-- Orta uzunlukta prompt (4-6 bölüm)
-- CO-STAR framework'ünün temel elemanlarını kullan
-- Bağlam, amaç, ton ve yapıyı belirt
-- Birkaç spesifik kısıtlama ekle
-- Örnek uzunluk: 300-600 kelime`;
+COMPLEXITY LEVEL 4-6 (BALANCED) - THIS IS VERY IMPORTANT:
+- Medium length prompt (4-6 sections)
+- Use basic elements of the CO-STAR framework
+- Specify context, objective, tone, and structure
+- Add a few specific constraints
+- Example length: 300-600 words`;
   } else if (complexity <= 8) {
     complexityDirective = `
-KARMAŞIKLIK SEVİYESİ 7-8 (DETAYLI) - BU ÇOK ÖNEMLİ:
-- Kapsamlı ama aşırı uzun olmayan prompt (5-6 bölüm)
-- CO-STAR framework'ünü uygula ama her bölümü uzatma
-- Spesifik örnekler ekle ama her detayı anlatma
-- Teknik terimler kullan ama gereksiz akademik jargon kullanma
-- Temel kalite kriterleri belirt
-- Örnek uzunluk: 600-900 kelime`;
+COMPLEXITY LEVEL 7-8 (DETAILED) - THIS IS VERY IMPORTANT:
+- Comprehensive but not overly long prompt (5-6 sections)
+- Apply CO-STAR framework but don't extend every section
+- Add specific examples but don't explain every detail
+- Use technical terms but avoid unnecessary academic jargon
+- Specify basic quality criteria
+- Example length: 600-900 words`;
   } else {
     complexityDirective = `
-KARMAŞIKLIK SEVİYESİ 9-10 (UZMAN) - BU ÇOK ÖNEMLİ:
-- Uzman seviyesinde detaylı prompt (6-7 bölüm)
-- Her bölüm dengeli derinlikte olsun, aşırı uzun paragraflar yazma
-- Önemli senaryolar ve edge case'ler (hepsini değil)
-- Temel metrikler ve başarı kriterleri
-- Gerekli referanslar (her konuya kaynakça değil)
-- Örnek uzunluk: 1000-1400 kelime (1500+ değil)`;
+COMPLEXITY LEVEL 9-10 (EXPERT) - THIS IS VERY IMPORTANT:
+- Expert-level detailed prompt (6-7 sections)
+- Each section should have balanced depth, don't write overly long paragraphs
+- Important scenarios and edge cases (not all of them)
+- Key metrics and success criteria
+- Necessary references (not a bibliography for every topic)
+- Example length: 1000-1400 words (not 1500+)`;
   }
   
-  // Rastgele varyasyonlar varsa, kullanıcı isteğine ekle
+  // Add random variations to user request if available
   const variationDirective = randomVariations ? `
-RASTGELE VARYASYONLAR (BU VARYASYONLARI PROMPTA ENTEGRE ET):
-- Yaklaşım Açısı: ${randomVariations.angle}
-- Odak Noktası: ${randomVariations.focus}
-- Perspektif: ${randomVariations.perspective}
-- Kapsam: ${randomVariations.scope}
-- Tam Açıklama: ${randomVariations.combined}
+RANDOM VARIATIONS (INTEGRATE THESE INTO THE PROMPT):
+- Approach Angle: ${randomVariations.angle}
+- Focus Point: ${randomVariations.focus}
+- Perspective: ${randomVariations.perspective}
+- Scope: ${randomVariations.scope}
+- Full Description: ${randomVariations.combined}
 
-ÖNEMLİ: Yukarıdaki varyasyonları promptun içine entegre et. Örneğin AMAÇ kısmında "[RANDOMIZED] biyoteknoloji" gibi bir yer tutucu varsa, bunu "${randomVariations.scope} bir yaklaşımla biyoteknoloji konusunda ${randomVariations.angle} ${randomVariations.focus} üzerine odaklanan, ${randomVariations.perspective} bir bakış açısı sunan" şeklinde doldur.
+IMPORTANT: Integrate the above variations into the prompt. For example, if there is a placeholder like "[RANDOMIZED] biotechnology" in the OBJECTIVE section, fill it as "${randomVariations.scope} approach to biotechnology focusing on ${randomVariations.angle} ${randomVariations.focus}, offering a ${randomVariations.perspective} perspective".
 ` : '';
 
-  // Proje türüne göre yönlendirme ekle
+  // Add project type guidance
   const projectTypeGuidance = getProjectTypeGuidance(projectType);
 
-  return `Konu: ${topic}
-Proje Türü: ${projectType}
-Karmaşıklık: ${complexity}/10 - ${complexityDescription}
-Hedef AI: ${targetAI}
-Çıktı Dili: ${outputLanguage}
+  return `Topic: ${topic}
+Project Type: ${projectType}
+Complexity: ${complexity}/10 - ${complexityDescription}
+Target AI: ${targetAI}
+Output Language: ${outputLanguage}
 ${variationDirective}
 
-PROJE TÜRÜ YÖNLENDİRMESİ:
+PROJECT TYPE GUIDANCE:
 ${projectTypeGuidance}
 
 ${complexityDirective}
 
-Yukarıdaki bilgilere göre optimize edilmiş bir prompt oluştur.
+Create an optimized prompt based on the information above.
 
-GÖREV KURALLARI:
-1. Kullanıcının belirttiği ${complexity}/10 karmaşıklık seviyesine GÖRE promptun uzunluğunu ve detayını ayarla.
-   - Eğer 1-3 ise KISA ve BASİT
-   - Eğer 4-6 ise ORTA seviyede
-   - Eğer 7-8 ise DETAYLI
-   - Eğer 9-10 ise ÇOK DETAYLI ve AKADEMİK olsun.
+TASK RULES:
+1. Adjust the prompt length and detail according to the complexity level ${complexity}/10 specified by the user.
+   - If 1-3: SHORT and SIMPLE
+   - If 4-6: MEDIUM level
+   - If 7-8: DETAILED
+   - If 9-10: VERY DETAILED and ACADEMIC
 
-2. EĞER RASTGELE VARYASYONLAR VERİLDİYSE:
-   - Prompt içindeki [RANDOMIZED] veya benzeri yer tutucuları DOLDUR
-   - Varyasyonları promptun doğal bir parçası olarak entegre et
-   - Örneğin: "[RANDOMIZED] biyoteknoloji" → "${randomVariations ? randomVariations.scope + ' bir yaklaşımla biyoteknoloji konusunda ' + randomVariations.angle + ' ' + randomVariations.focus + ' üzerine odaklanan, ' + randomVariations.perspective + ' bir bakış açısı sunan' : 'kapsamlı bir yaklaşımla biyoteknoloji konusunda yeni başlayanlar için temel prensipler üzerine odaklanan, optimist bir bakış açısı sunan'}"
+2. IF RANDOM VARIATIONS ARE PROVIDED:
+   - FILL IN any [RANDOMIZED] or similar placeholders in the prompt
+   - Integrate variations as a natural part of the prompt
+   - Example: "[RANDOMIZED] biotechnology" → "${randomVariations ? randomVariations.scope + ' approach to biotechnology focusing on ' + randomVariations.angle + ' ' + randomVariations.focus + ', offering a ' + randomVariations.perspective + ' perspective' : 'comprehensive approach to biotechnology focusing on fundamentals for beginners, offering an optimistic perspective'}"
 
-3. SADECE PROMPT METNİ ÜRET:
-   - Hedef AI'ya hitap ETME (örn: "KiloCode, bu projeyi yap...")
-   - "Hazır ol", "Şunu yap", "İşte promptun" gibi ifadeler kullanma
-   - Giriş/sonuç cümleleri ekleme
-   - Başında "Prompt:" yazma
-   - Sonunda açıklama yapma
-   - Tırnak işaretleri kullanma
-   - Sadece YAPISAL prompt içeriği üret
-   - Doğrudan kullanılabilir içerik üret
+3. ONLY PRODUCE PROMPT TEXT:
+   - Do NOT address the target AI (e.g., "KiloCode, do this project...")
+   - Do NOT use phrases like "Ready", "Do this", "Here is your prompt"
+   - Do NOT add intro/outro sentences
+   - Do NOT start with "Prompt:"
+   - Do NOT add explanations at the end
+   - Do NOT use quotation marks
+   - Only produce STRUCTURED prompt content
+   - Produce directly usable content
 
-4. Oluşturacağın prompt MUTLAKA ${outputLanguage} dilinde olmalıdır.`;
+4. The prompt you create MUST be in ${outputLanguage} language.`;
 };
 
 /**
@@ -490,94 +491,94 @@ const cleanPromptOutput = (text, targetAI) => {
  * @returns {string} Açıklama
  */
 /**
- * Proje türüne göre yönlendirme metni döndürür
- * @param {string} projectType - Proje türü
- * @returns {string} Yönlendirme metni
+ * Returns guidance text based on project type
+ * @param {string} projectType - Project type
+ * @returns {string} Guidance text
  */
 const getProjectTypeGuidance = (projectType) => {
   const guidanceMap = {
-    webApp: `Bu bir Web Uygulaması projesidir. Prompt oluştururken şunlara dikkat et:
-- Modern web teknolojileri (React, Vue, Angular, Next.js vb.)
-- Responsive tasarım ve mobil uyumluluk
-- SEO optimizasyonu ve erişilebilirlik
-- Frontend ve backend entegrasyonu
-- Güvenlik best practices (XSS, CSRF, vb.)`,
+    webApp: `This is a Web Application project. When creating the prompt, consider:
+- Modern web technologies (React, Vue, Angular, Next.js, etc.)
+- Responsive design and mobile compatibility
+- SEO optimization and accessibility
+- Frontend and backend integration
+- Security best practices (XSS, CSRF, etc.)`,
 
-    mobileGame: `Bu bir Mobil Oyun projesidir. Prompt oluştururken şunlara dikkat et:
-- Oyun mekaniği ve oynanabilirlik
-- Mobil UX/UI tasarım ilkeleri
-- Performans optimizasyonu (FPS, bellek yönetimi)
-- Dokunmatik kontroller ve gesture'lar
-- Platform spesifik özellikler (iOS/Android)`,
+    mobileGame: `This is a Mobile Game project. When creating the prompt, consider:
+- Game mechanics and playability
+- Mobile UX/UI design principles
+- Performance optimization (FPS, memory management)
+- Touch controls and gestures
+- Platform-specific features (iOS/Android)`,
 
-    dataAnalysis: `Bu bir Veri Analizi projesidir. Prompt oluştururken şunlara dikkat et:
-- Veri işleme ve temizleme teknikleri
-- İstatistiksel analiz ve modelleme
-- Veri görselleştirme (grafikler, dashboardlar)
-- Python/R gibi analiz araçları
-- Büyük veri teknolojileri (opsiyonel)`,
+    dataAnalysis: `This is a Data Analysis project. When creating the prompt, consider:
+- Data processing and cleaning techniques
+- Statistical analysis and modeling
+- Data visualization (charts, dashboards)
+- Analysis tools like Python/R
+- Big data technologies (optional)`,
 
-    desktopApp: `Bu bir Masaüstü Uygulaması projesidir. Prompt oluştururken şunlara dikkat et:
-- Cross-platform framework'ler (Electron, Tauri, Flutter)
-- Native performans optimizasyonu
-- Dosya sistemi ve OS entegrasyonu
-- Offline çalışma yetenekleri
-- Dağıtım ve güncelleme mekanizmaları`,
+    desktopApp: `This is a Desktop Application project. When creating the prompt, consider:
+- Cross-platform frameworks (Electron, Tauri, Flutter)
+- Native performance optimization
+- File system and OS integration
+- Offline capabilities
+- Distribution and update mechanisms`,
 
-    api: `Bu bir API / Backend projesidir. Prompt oluştururken şunlara dikkat et:
-- RESTful veya GraphQL API tasarımı
-- Authentication ve authorization (JWT, OAuth)
-- Veritabanı tasarımı ve ORM kullanımı
-- API dokümantasyonu (OpenAPI/Swagger)
-- Rate limiting, caching ve güvenlik`,
+    api: `This is an API / Backend project. When creating the prompt, consider:
+- RESTful or GraphQL API design
+- Authentication and authorization (JWT, OAuth)
+- Database design and ORM usage
+- API documentation (OpenAPI/Swagger)
+- Rate limiting, caching, and security`,
 
-    aiMl: `Bu bir AI / Makine Öğrenmesi projesidir. Prompt oluştururken şunlara dikkat et:
-- ML model seçimi ve eğitimi
-- Veri seti hazırlama ve preprocessing
-- Model değerlendirme metrikleri
-- Deployment ve MLOps
-- Etik AI prensipleri`,
+    aiMl: `This is an AI / Machine Learning project. When creating the prompt, consider:
+- ML model selection and training
+- Dataset preparation and preprocessing
+- Model evaluation metrics
+- Deployment and MLOps
+- Ethical AI principles`,
 
-    ecommerce: `Bu bir E-ticaret projesidir. Prompt oluştururken şunlara dikkat et:
-- Ürün kataloğu ve envanter yönetimi
-- Ödeme sistemi entegrasyonu
-- Sepet ve checkout akışları
-- Kullanıcı yorumları ve derecelendirmeler
-- SEO ve performans optimizasyonu`,
+    ecommerce: `This is an E-commerce project. When creating the prompt, consider:
+- Product catalog and inventory management
+- Payment system integration
+- Cart and checkout flows
+- User reviews and ratings
+- SEO and performance optimization`,
 
-    iot: `Bu bir IoT / Gömülü Sistem projesidir. Prompt oluştururken şunlara dikkat et:
-- Sensör verisi toplama ve işleme
-- Gerçek zamanlı veri akışı
-- Edge computing ve bulut entegrasyonu
-- Güç yönetimi ve verimlilik
-- Güvenlik (cihaz ve ağ seviyesinde)`,
+    iot: `This is an IoT / Embedded System project. When creating the prompt, consider:
+- Sensor data collection and processing
+- Real-time data streaming
+- Edge computing and cloud integration
+- Power management and efficiency
+- Security (device and network level)`,
 
-    blockchain: `Bu bir Blockchain / Web3 projesidir. Prompt oluştururken şunlara dikkat et:
-- Akıllı kontrat geliştirme (Solidity, Rust)
-- Web3 entegrasyonu ve cüzdan bağlantısı
-- Merkeziyetsiz uygulama (dApp) mimarisi
-- Güvenlik denetimleri ve best practices
-- Gas optimizasyonu`,
+    blockchain: `This is a Blockchain / Web3 project. When creating the prompt, consider:
+- Smart contract development (Solidity, Rust)
+- Web3 integration and wallet connection
+- Decentralized application (dApp) architecture
+- Security audits and best practices
+- Gas optimization`,
 
-    contentPlatform: `Bu bir İçerik Platformu projesidir. Prompt oluştururken şunlara dikkat et:
-- İçerik yönetim sistemi (CMS) yapısı
-- Kullanıcı üretimi içerik (UGC) özellikleri
-- Sosyal özellikler (yorum, beğeni, paylaşım)
-- İçerik moderasyonu ve filtreleme
-- SEO ve içerik keşfedilebilirliği`,
+    contentPlatform: `This is a Content Platform project. When creating the prompt, consider:
+- Content management system (CMS) structure
+- User-generated content (UGC) features
+- Social features (comments, likes, shares)
+- Content moderation and filtering
+- SEO and content discoverability`,
 
-    automation: `Bu bir Otomasyon / Script projesidir. Prompt oluştururken şunlara dikkat et:
-- Script dili seçimi (Python, Bash, PowerShell)
-- Hata yönetimi ve logging
-- Zamanlama ve cron job'lar
-- API entegrasyonları
-- Otomasyon güvenliği ve erişim yönetimi`,
+    automation: `This is an Automation / Script project. When creating the prompt, consider:
+- Script language selection (Python, Bash, PowerShell)
+- Error handling and logging
+- Scheduling and cron jobs
+- API integrations
+- Automation security and access management`,
 
-    other: `Bu genel bir projedir. Prompt oluştururken şunlara dikkat et:
-- Projenin spesifik gereksinimlerini analiz et
-- Endüstri standartları ve best practices
-- Ölçeklenebilirlik ve bakım kolaylığı
-- Dokümantasyon ve test stratejisi`,
+    other: `This is a general project. When creating the prompt, consider:
+- Analyze the project's specific requirements
+- Industry standards and best practices
+- Scalability and maintainability
+- Documentation and testing strategy`,
   };
 
   return guidanceMap[projectType] || guidanceMap.other;
@@ -596,14 +597,14 @@ const getComplexityDescription = (complexity) => {
 };
 
 /**
- * API hatalarını işler ve kullanıcı dostu mesajlar döndürür
- * @param {Error} error - API hatası
- * @returns {Error} İşlenmiş hata
+ * Handles API errors and returns user-friendly messages
+ * @param {Error} error - API error
+ * @returns {Error} Processed error
  */
 const handleApiError = (error) => {
   const errorMessage = error.message || '';
   
-  // API anahtarı hataları
+  // API key errors
   if (errorMessage.includes('API key') || errorMessage.includes('api key')) {
     return new Error('Invalid API key. Please get a free API key from Google AI Studio.');
   }
@@ -621,19 +622,19 @@ const handleApiError = (error) => {
       );
     }
   
-  // Ağ hataları
+  // Network errors
   if (errorMessage.includes('network') || errorMessage.includes('fetch')) {
     return new Error('Connection error. Please check your internet connection.');
   }
   
-  // Genel hata
+  // General error
   return new Error('An error occurred while generating the prompt. Please try again.');
 };
 
 /**
- * API anahtarının geçerli olup olmadığını kontrol eder
- * @param {string} apiKey - Kontrol edilecek API anahtarı
- * @returns {Promise<boolean>} Geçerli mi?
+ * Checks if the API key is valid
+ * @param {string} apiKey - API key to check
+ * @returns {Promise<boolean>} Is valid?
  */
 export const validateApiKey = async (apiKey) => {
   try {
@@ -644,136 +645,136 @@ export const validateApiKey = async (apiKey) => {
     const genAI = createGeminiClient(apiKey);
     const model = genAI.getGenerativeModel({ model: MODEL_NAME });
     
-    // Basit bir test isteği gönder - listModels daha hızlı ve güvenilir
+    // Send a simple test request - listModels is faster and more reliable
     await model.generateContent({
       contents: [{ role: 'user', parts: [{ text: 'Hi' }] }],
       generationConfig: { maxOutputTokens: 1 }
     });
     return true;
   } catch (error) {
-    console.error('API doğrulama hatası:', error);
-    // API key geçersiz değilse, rate limit veya başka bir hata olabilir
-    // Bu durumda yine de true döndürebiliriz çünkü anahtar formatı doğrudur
+    console.error('API validation error:', error);
+    // If API key is not invalid, it could be rate limit or another error
+    // In this case, we can still return true because the key format is correct
     if (error.message && error.message.includes('API key not valid')) {
       return false;
     }
-    // Diğer hatalar (rate limit vb.) anahtarın geçerli olduğunu gösterebilir
+    // Other errors (rate limit, etc.) may indicate the key is valid
     return true;
   }
 };
 
 /**
- * Notebook LM için sistem talimatı
- * @param {string} mode - 'deepResearch' veya 'questionPrompts'
- * @returns {string} Sistem talimatı
+ * System instruction for Notebook LM
+ * @param {string} mode - 'deepResearch' or 'questionPrompts'
+ * @returns {string} System instruction
  */
 const getNotebookLMInstruction = (mode) => {
   if (mode === 'questionPrompts') {
     return `
-    Rolün: Sen bir Eğitim İçerik Uzmanı ve Soru Tasarımcısısın. Notebook LM için etkili soru promptları oluşturuyorsun.
+    Role: You are an Educational Content Expert and Question Designer. You create effective question prompts for Notebook LM.
 
-    GÖREVİN:
-    Verilen konu hakkında, öğrenme ve anlama sürecini destekleyen, düşündürücü ve kapsamlı sorular oluştur.
+    YOUR TASK:
+    Create thought-provoking and comprehensive questions about the given topic that support the learning and understanding process.
 
-    KARMAŞIKLIK SEVİYESİNE GÖRE SORU SAYISI:
-    - Seviye 1-3: 3-5 temel soru
-    - Seviye 4-6: 6-10 çeşitli soru (açık uçlu ve yönlendirici)
-    - Seviye 7-8: 10-15 derinlemesine soru (analiz ve sentez düzeyinde)
-    - Seviye 9-10: 15-25 uzman seviyesi soru (eleştirel düşünme ve değerlendirme)
+    NUMBER OF QUESTIONS BY COMPLEXITY LEVEL:
+    - Level 1-3: 3-5 basic questions
+    - Level 4-6: 6-10 varied questions (open-ended and guiding)
+    - Level 7-8: 10-15 in-depth questions (analysis and synthesis level)
+    - Level 9-10: 15-25 expert-level questions (critical thinking and evaluation)
 
-    SORU TİPLERİ:
-    1. Anlama Soruları: Temel kavramları kavramayı test eden
-    2. Analiz Soruları: Bilgiyi parçalara ayırıp ilişkileri kuran
-    3. Uygulama Soruları: Bilgiyi pratik senaryolarda kullanan
-    4. Sentez Soruları: Farklı kaynakları birleştiren
-    5. Değerlendirme Soruları: Eleştirel düşünmeyi gerektiren
+    QUESTION TYPES:
+    1. Understanding Questions: Testing basic concept comprehension
+    2. Analysis Questions: Breaking down information and establishing relationships
+    3. Application Questions: Using knowledge in practical scenarios
+    4. Synthesis Questions: Combining different sources
+    5. Evaluation Questions: Requiring critical thinking
 
-    ÇIKTI FORMATI:
-    - Her soru net ve anlaşılır olmalı
-    - Sorular konuyla doğrudan ilgili olmalı
-    - Farklı zorluk seviyelerinde sorular içermeli
-    - Sadece soruları listele, ekstra açıklama yapma
+    OUTPUT FORMAT:
+    - Each question must be clear and understandable
+    - Questions must be directly related to the topic
+    - Include questions at different difficulty levels
+    - List only the questions, no extra explanations
     `;
   }
 
-  // Deep Research (default) - Revize edilmiş versiyon
+  // Deep Research (default) - Revised version
   return `
-  Rolün: Sen bir Araştırma Promptu Oluşturma Uzmanısın. Notebook LM için kullanıcının girdiği konuya göre detaylı araştırma cümleleri/promptları oluşturuyorsun.
+  Role: You are a Research Prompt Creation Expert. You create detailed research sentences/prompts for Notebook LM based on the topic entered by the user.
 
-  GÖREVİN:
-  Kullanıcının girdiği konuyu analiz et ve bu konu hakkında Notebook LM'de detaylı bir araştırma yapılmasını sağlayacak kapsamlı bir prompt oluştur.
+  YOUR TASK:
+  Analyze the topic entered by the user and create a comprehensive prompt that will enable detailed research on this topic in Notebook LM.
 
-  ÖRNEK:
-  Konu: "Harry Potter evrenindeki karakterler"
-  Oluşturulan Prompt: "Harry Potter evrenindeki karakterleri detaylı bir şekilde araştır. Her karakterin adı, soyadı, doğum tarihi, ailesi, yetenekleri, rolü ve hikayedeki önemi hakkında kapsamlı bilgiler ver. Ayrıca karakterlerin aralarındaki ilişkileri ve evrenin tarihçesi hakkında da detaylı bilgiler ver."
+  EXAMPLE:
+  Topic: "Characters in the Harry Potter universe"
+  Generated Prompt: "Research the characters in the Harry Potter universe in detail. Provide comprehensive information about each character's name, surname, birth date, family, abilities, role, and importance in the story. Also provide detailed information about the relationships between characters and the history of the universe."
 
-  KARMAŞIKLIK SEVİYESİNE GÖRE:
-  - Seviye 1-3: Temel bilgiler, ana kavramlar ve genel bakış
-  - Seviye 4-6: Orta düzey detay, önemli alt konular, temel ilişkiler
-  - Seviye 7-8: Detaylı analiz, derinlemesine bilgiler, karşılaştırmalar
-  - Seviye 9-10: Kapsamlı akademik düzeyde, tüm yönleriyle detaylı araştırma
+  BY COMPLEXITY LEVEL:
+  - Level 1-3: Basic information, main concepts, and overview
+  - Level 4-6: Medium level detail, important sub-topics, basic relationships
+  - Level 7-8: Detailed analysis, in-depth information, comparisons
+  - Level 9-10: Comprehensive academic level, detailed research on all aspects
 
-  PROMPT OLUŞTURMA KURALLARI:
-  1. Konuyu analiz et ve en önemli araştırma alanlarını belirle
-  2. Spesifik detaylar iste (isimler, tarihler, özellikler, ilişkiler vb.)
-  3. Konunun farklı yönlerini kapsa (tarihçe, önemli noktalar, ilişkiler, etkiler)
-  4. Araştırmanın derinliğini karmaşıklık seviyesine göre ayarla
-  5. Notebook LM'in araştırma yapmasını sağlayacak şekilde yönlendirici ol
+  PROMPT CREATION RULES:
+  1. Analyze the topic and identify the most important research areas
+  2. Request specific details (names, dates, features, relationships, etc.)
+  3. Cover different aspects of the topic (history, key points, relationships, effects)
+  4. Adjust research depth according to complexity level
+  5. Be directive to enable Notebook LM to conduct research
 
-  ÇIKTI FORMATI:
-  - Sadece oluşturulan araştırma promptunu/cümlesini ver
-  - Başında "Prompt:" veya benzeri ifadeler kullanma
-  - Doğrudan Notebook LM'e girilebilecek şekilde net ve anlaşılır ol
-  - Ekstra açıklama, giriş veya sonuç cümlesi ekleme
+  OUTPUT FORMAT:
+  - Provide only the generated research prompt/sentence
+  - Do NOT use phrases like "Prompt:" at the beginning
+  - Be clear and understandable for direct input into Notebook LM
+  - Do NOT add extra explanations, introductions, or conclusion sentences
   `;
 };
 
 /**
- * Notebook LM isteğini formatlar
- * @param {string} topic - Konu
- * @param {number} complexity - Karmaşıklık seviyesi
- * @param {string} mode - 'deepResearch' veya 'questionPrompts'
- * @param {string} outputLanguage - Çıktı dili
- * @returns {string} Formatlanmış istek
+ * Formats Notebook LM request
+ * @param {string} topic - Topic
+ * @param {number} complexity - Complexity level
+ * @param {string} mode - 'deepResearch' or 'questionPrompts'
+ * @param {string} outputLanguage - Output language
+ * @returns {string} Formatted request
  */
 const formatNotebookLMRequest = (topic, complexity, mode, outputLanguage = 'English') => {
   const questionCount = getQuestionCountByComplexity(complexity);
   
   if (mode === 'questionPrompts') {
-    return `Konu: ${topic}
-Karmaşıklık: ${complexity}/10
-Mod: Soru Promptları
-Hedef Soru Sayısı: ${questionCount.min}-${questionCount.max}
-Çıktı Dili: ${outputLanguage}
+    return `Topic: ${topic}
+Complexity: ${complexity}/10
+Mode: Question Prompts
+Target Question Count: ${questionCount.min}-${questionCount.max}
+Output Language: ${outputLanguage}
 
-Yukarıdaki konu hakkında ${questionCount.min}-${questionCount.max} adet soru oluştur.
-Sorular farklı düşünme seviyelerini (Bloom Taksonomisi) kapsamalı.
-Sadece soruları listele, başka açıklama yapma.`;
+Create ${questionCount.min}-${questionCount.max} questions about the above topic.
+Questions should cover different thinking levels (Bloom's Taxonomy).
+List only the questions, no other explanations.`;
   }
 
-  // Deep Research - Kullanıcının girdiği konuya göre araştırma promptu oluştur
-  return `KONU: "${topic}"
+  // Deep Research - Create research prompt based on user's topic
+  return `TOPIC: "${topic}"
 
-Yukarıdaki konu hakkında Notebook LM'de kullanılmak üzere detaylı bir araştırma promptu oluştur.
+Create a detailed research prompt for use in Notebook LM about the above topic.
 
-KARMAŞIKLIK SEVİYESİ: ${complexity}/10
+COMPLEXITY LEVEL: ${complexity}/10
 
-GÖREV:
-1. Konuyu analiz et ve en önemli araştırma alanlarını belirle
-2. Konu hakkında detaylı bilgiler iste (isimler, tarihler, özellikler, ilişkiler, tarihçe vb.)
-3. Karmaşıklık seviyesine göre detay derinliğini ayarla
-4. Notebook LM'in bu konuyu araştırmasını sağlayacak şekilde kapsamlı bir prompt oluştur
+TASK:
+1. Analyze the topic and identify the most important research areas
+2. Request detailed information about the topic (names, dates, features, relationships, history, etc.)
+3. Adjust detail depth according to complexity level
+4. Create a comprehensive prompt that will enable Notebook LM to research this topic
 
-ÖRNEK ÇIKTI FORMATI:
-"[Konu] hakkında detaylı bir şekilde araştırma yap. [Spesifik detaylar, alt konular, ilişkiler ve tarihçe hakkında kapsamlı bilgiler iste.]"
+EXAMPLE OUTPUT FORMAT:
+"Research [Topic] in detail. [Request comprehensive information about specific details, sub-topics, relationships, and history.]"
 
-NOT: Sadece oluşturulan araştırma cümlesini/promptunu ver. Başka açıklama yapma.`;
+NOTE: Provide only the generated research sentence/prompt. No other explanations.`;
 };
 
 /**
- * Karmaşıklık seviyesine göre soru sayısı döndürür
- * @param {number} complexity - Karmaşıklık seviyesi
- * @returns {Object} Min ve max soru sayısı
+ * Returns question count based on complexity level
+ * @param {number} complexity - Complexity level
+ * @returns {Object} Min and max question count
  */
 const getQuestionCountByComplexity = (complexity) => {
   if (complexity <= 3) {
@@ -799,11 +800,11 @@ export const generateRandomPrompt = async ({ apiKey, topic, complexity, targetAI
   try {
     const genAI = createGeminiClient(apiKey);
     
-    console.log('generateRandomPrompt çağrıldı:', { topic, complexity, targetAI, outputLanguage });
+    console.log('generateRandomPrompt called:', { topic, complexity, targetAI, outputLanguage });
     
-    // Eğer konu varsa, normal generatePrompt kullan ama yaratıcı varyasyonlar ekle
+    // If topic exists, use normal generatePrompt but add creative variations
     if (topic && topic.trim()) {
-      console.log('Konu var, normal generatePrompt kullanılıyor:', topic);
+      console.log('Topic exists, using normal generatePrompt:', topic);
       return await generatePrompt({
         apiKey,
         topic: topic,
@@ -811,32 +812,32 @@ export const generateRandomPrompt = async ({ apiKey, topic, complexity, targetAI
         targetAI: targetAI || 'ChatGPT',
         outputLanguage,
         projectType,
-        isRandomized: true // Rastgele varyasyonları etkinleştir
+        isRandomized: true // Enable random variations
       });
     }
     
     const randomInstruction = `
-    Rolün: Sen yaratıcı ve beklenmedik fikirler üreten bir Prompt İnovatörüsün.
+    Role: You are a Prompt Innovator who generates creative and unexpected ideas.
 
-    GÖREVİN:
-    Kullanıcı "Randomize" butonuna bastığında, tamamen rastgele, yaratıcı, akla gelmeyecek ve ilginç bir prompt oluştur.
+    YOUR TASK:
+    When the user clicks the "Randomize" button, create a completely random, creative, unexpected, and interesting prompt.
 
-    RASTGELELİK KRİTERLERİ:
-    - Konu tamamen rastgele seçilmeli (teknoloji, sanat, bilim, felsefe, günlük yaşam, hayali senaryolar)
-    - Beklenmedik kombinasyonlar kullan (örn: "Bir kahve makinesiyle uzay gemisi nasıl tamir edilir")
-    - Farklı türler karıştırılabilir (bilim kurgu + tarih, romantik komedi + korku)
-    - Absürt ama mantıklı senaryolar oluştur
+    RANDOMNESS CRITERIA:
+    - Topic should be completely randomly selected (technology, art, science, philosophy, daily life, imaginary scenarios)
+    - Use unexpected combinations (e.g., "How to repair a spaceship with a coffee machine")
+    - Different genres can be mixed (sci-fi + history, romantic comedy + horror)
+    - Create absurd but logical scenarios
 
-    KARMAŞIKLIK SEVİYESİNE GÖRE:
-    - Seviye 1-3: Basit, eğlenceli ve hızlı rastgele promptlar
-    - Seviye 4-6: Orta düzey yaratıcılık, ilginç senaryolar
-    - Seviye 7-8: Detaylı, karmaşık ve çok katmanlı rastgele promptlar
-    - Seviye 9-10: Uzman seviyesi, derinlemesine ve son derece yaratıcı promptlar
+    BY COMPLEXITY LEVEL:
+    - Level 1-3: Simple, fun, and quick random prompts
+    - Level 4-6: Medium level creativity, interesting scenarios
+    - Level 7-8: Detailed, complex, and multi-layered random prompts
+    - Level 9-10: Expert level, in-depth, and extremely creative prompts
 
-    ÇIKTI FORMATI:
-    - Sadece prompt metnini ver
-    - "İşte rastgele promptun" gibi girişler yapma
-    - Doğrudan kullanılabilir, yapılandırılmış bir prompt olsun
+    OUTPUT FORMAT:
+    - Provide only the prompt text
+    - Do NOT use phrases like "Here is your random prompt"
+    - Should be a directly usable, structured prompt
     `;
     
     const model = genAI.getGenerativeModel({ 
@@ -844,13 +845,13 @@ export const generateRandomPrompt = async ({ apiKey, topic, complexity, targetAI
       systemInstruction: randomInstruction
     });
 
-    const userPrompt = `Karmaşıklık: ${complexity}/10
-Hedef AI: ${targetAI || 'ChatGPT'}
-Çıktı Dili: ${outputLanguage}
+    const userPrompt = `Complexity: ${complexity}/10
+Target AI: ${targetAI || 'ChatGPT'}
+Output Language: ${outputLanguage}
 
-Yukarıdaki karmaşıklık seviyesine göre tamamen rastgele, yaratıcı ve beklenmedik bir prompt oluştur.
-Konu, senaryo ve yaklaşım tamamen rastgele seçilmeli.
-Sadece prompt metnini ver, ekstra açıklama yapma.`;
+Create a completely random, creative, and unexpected prompt based on the above complexity level.
+Topic, scenario, and approach should be completely randomly selected.
+Provide only the prompt text, no extra explanations.`;
 
     const result = await model.generateContent({
       contents: [{ role: 'user', parts: [{ text: userPrompt }] }],

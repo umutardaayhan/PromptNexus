@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.2] - 2026-01-31
+
+### Changed
+- **English-Only Prompt Generation**: All prompts sent to Gemini API are now in English
+  - System instruction translated to English for better AI comprehension
+  - User request formatting now uses English instructions
+  - Project type guidance translated to English
+  - Notebook LM instructions translated to English
+  - Random prompt generation instructions translated to English
+  - Output language is still respected - responses are generated in user's selected language
+
 ## [1.2.1] - 2026-01-31
 
 ### Fixed

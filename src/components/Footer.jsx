@@ -2,10 +2,10 @@ import { motion } from 'framer-motion';
 import { Heart, ExternalLink } from 'lucide-react';
 
 /**
- * Footer Bileşeni
- * Sayfa alt bilgisi
+ * Footer Component
+ * Page footer
  */
-const Footer = () => {
+const Footer = ({ t }) => {
   const currentYear = new Date().getFullYear();
 
   return (
@@ -19,15 +19,15 @@ const Footer = () => {
         <div className="divider mb-8" />
         
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-          {/* Sol Taraf - Telif */}
+          {/* Left - Copyright */}
           <div className="flex items-center gap-1 text-sm text-text-muted">
             <span>&copy; {currentYear} PromptNexus.</span>
             <span className="flex items-center gap-1">
-              <Heart className="w-3.5 h-3.5 text-red-400 fill-red-400" /> ile yapıldı
+              <Heart className="w-3.5 h-3.5 text-red-400 fill-red-400" /> {t('footer.madeWith')}
             </span>
           </div>
 
-          {/* Orta - Teknolojiler */}
+          {/* Center - Technologies */}
           <div className="flex items-center gap-4 text-xs text-text-muted">
             <span>React</span>
             <span className="w-1 h-1 rounded-full bg-text-muted" />
@@ -38,7 +38,7 @@ const Footer = () => {
             <span>Gemini</span>
           </div>
 
-          {/* Sağ Taraf - Linkler */}
+          {/* Right - Links */}
           <div className="flex items-center gap-4">
             <a
               href="https://ai.google.dev/"
@@ -55,7 +55,7 @@ const Footer = () => {
               rel="noopener noreferrer"
               className="flex items-center gap-1 text-sm text-text-muted hover:text-neon-cyan transition-colors"
             >
-              API Anahtarı Al
+              {t('footer.getApiKey')}
               <ExternalLink className="w-3 h-3" />
             </a>
           </div>

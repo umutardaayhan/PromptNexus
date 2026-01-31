@@ -2,40 +2,40 @@ import { motion } from 'framer-motion';
 import { Thermometer, Snowflake, Flame } from 'lucide-react';
 
 /**
- * ComplexitySlider Bileşeni
- * "Yaratıcı Sıcaklık" kaydırıcısı - Karmaşıklık seviyesi seçimi
+ * ComplexitySlider Component
+ * "Creative Temperature" slider - Complexity level selection
  */
-const ComplexitySlider = ({ value, onChange, disabled }) => {
-  // Karmaşıklık seviyesine göre etiket ve renk belirle
+const ComplexitySlider = ({ value, onChange, disabled, t }) => {
+  // Determine label and color based on complexity level
   const getComplexityInfo = (level) => {
     if (level <= 3) {
       return {
-        label: 'Basit',
-        description: 'Direkt ve net',
+        label: t('complexity.simple'),
+        description: t('complexity.simpleDesc'),
         icon: <Snowflake className="w-4 h-4" />,
         color: 'text-blue-400',
         gradient: 'from-blue-500 to-cyan-500'
       };
     } else if (level <= 6) {
       return {
-        label: 'Dengeli',
-        description: 'Orta seviye detay',
+        label: t('complexity.balanced'),
+        description: t('complexity.balancedDesc'),
         icon: <Thermometer className="w-4 h-4" />,
         color: 'text-neon-cyan',
         gradient: 'from-cyan-500 to-teal-500'
       };
     } else if (level <= 8) {
       return {
-        label: 'Detaylı',
-        description: 'Kapsamlı',
+        label: t('complexity.detailed'),
+        description: t('complexity.detailedDesc'),
         icon: <Flame className="w-4 h-4" />,
         color: 'text-orange-400',
         gradient: 'from-teal-500 to-orange-500'
       };
     } else {
       return {
-        label: 'Uzman',
-        description: 'Son derece detaylı',
+        label: t('complexity.expert'),
+        description: t('complexity.expertDesc'),
         icon: <Flame className="w-4 h-4" />,
         color: 'text-red-400',
         gradient: 'from-orange-500 to-red-500'
@@ -47,11 +47,11 @@ const ComplexitySlider = ({ value, onChange, disabled }) => {
 
   return (
     <div className="space-y-3">
-      {/* Etiket ve Değer */}
+      {/* Label and Value */}
       <div className="flex items-center justify-between">
         <label className="flex items-center gap-2 text-sm font-medium text-text-primary">
           <Thermometer className="w-4 h-4 text-neon-cyan" />
-          Yaratıcı Sıcaklık
+          {t('creativeTemperature')}
         </label>
         <motion.div
           key={info.label}
@@ -65,7 +65,7 @@ const ComplexitySlider = ({ value, onChange, disabled }) => {
         </motion.div>
       </div>
 
-      {/* Kaydırıcı */}
+      {/* Slider */}
       <div className="relative">
         <input
           type="range"
@@ -80,7 +80,7 @@ const ComplexitySlider = ({ value, onChange, disabled }) => {
           }}
         />
         
-        {/* İşaretçiler */}
+        {/* Markers */}
         <div className="flex justify-between mt-2 px-1">
           {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
             <div
@@ -93,7 +93,7 @@ const ComplexitySlider = ({ value, onChange, disabled }) => {
         </div>
       </div>
 
-      {/* Açıklama */}
+      {/* Description */}
       <motion.p
         key={info.description}
         initial={{ opacity: 0 }}
@@ -105,8 +105,8 @@ const ComplexitySlider = ({ value, onChange, disabled }) => {
 
       {/* Seviye göstergeleri */}
       <div className="flex justify-between text-xs text-text-muted pt-1">
-        <span>Basit</span>
-        <span>Uzman</span>
+        <span>{t('complexity.minLabel')}</span>
+        <span>{t('complexity.maxLabel')}</span>
       </div>
     </div>
   );

@@ -1,0 +1,337 @@
+/**
+ * Prompt Templates Data
+ * Pre-defined prompt templates for various use cases
+ * Supports i18n with titleKey, descriptionKey, and topicKey
+ */
+
+export const templateCategories = [
+  { id: 'all', labelKey: 'templates.categories.all' },
+  { id: 'writing', labelKey: 'templates.categories.writing' },
+  { id: 'coding', labelKey: 'templates.categories.coding' },
+  { id: 'image', labelKey: 'templates.categories.image' },
+  { id: 'business', labelKey: 'templates.categories.business' },
+  { id: 'creative', labelKey: 'templates.categories.creative' },
+];
+
+export const promptTemplates = [
+  // Writing Templates
+  {
+    id: 'blog-post',
+    category: 'writing',
+    titleKey: 'templates.items.blogPost.title',
+    descriptionKey: 'templates.items.blogPost.description',
+    icon: 'FileText',
+    topicKey: 'templates.items.blogPost.topic',
+    defaultTargetAI: 'ChatGPT',
+    defaultComplexity: 7,
+  },
+  {
+    id: 'linkedin-post',
+    category: 'writing',
+    titleKey: 'templates.items.linkedinPost.title',
+    descriptionKey: 'templates.items.linkedinPost.description',
+    icon: 'Linkedin',
+    topicKey: 'templates.items.linkedinPost.topic',
+    defaultTargetAI: 'ChatGPT',
+    defaultComplexity: 6,
+  },
+  {
+    id: 'email-campaign',
+    category: 'writing',
+    titleKey: 'templates.items.emailCampaign.title',
+    descriptionKey: 'templates.items.emailCampaign.description',
+    icon: 'Mail',
+    topicKey: 'templates.items.emailCampaign.topic',
+    defaultTargetAI: 'ChatGPT',
+    defaultComplexity: 8,
+  },
+  {
+    id: 'product-description',
+    category: 'writing',
+    titleKey: 'templates.items.productDescription.title',
+    descriptionKey: 'templates.items.productDescription.description',
+    icon: 'ShoppingBag',
+    topicKey: 'templates.items.productDescription.topic',
+    defaultTargetAI: 'ChatGPT',
+    defaultComplexity: 6,
+  },
+  {
+    id: 'essay',
+    category: 'writing',
+    titleKey: 'templates.items.essay.title',
+    descriptionKey: 'templates.items.essay.description',
+    icon: 'GraduationCap',
+    topicKey: 'templates.items.essay.topic',
+    defaultTargetAI: 'Claude',
+    defaultComplexity: 9,
+  },
+
+  // Coding Templates
+  {
+    id: 'code-explanation',
+    category: 'coding',
+    titleKey: 'templates.items.codeExplanation.title',
+    descriptionKey: 'templates.items.codeExplanation.description',
+    icon: 'Code',
+    topicKey: 'templates.items.codeExplanation.topic',
+    defaultTargetAI: 'ChatGPT',
+    defaultComplexity: 7,
+  },
+  {
+    id: 'code-review',
+    category: 'coding',
+    titleKey: 'templates.items.codeReview.title',
+    descriptionKey: 'templates.items.codeReview.description',
+    icon: 'GitPullRequest',
+    topicKey: 'templates.items.codeReview.topic',
+    defaultTargetAI: 'Claude',
+    defaultComplexity: 8,
+  },
+  {
+    id: 'api-design',
+    category: 'coding',
+    titleKey: 'templates.items.apiDesign.title',
+    descriptionKey: 'templates.items.apiDesign.description',
+    icon: 'Server',
+    topicKey: 'templates.items.apiDesign.topic',
+    defaultTargetAI: 'ChatGPT',
+    defaultComplexity: 8,
+  },
+  {
+    id: 'database-schema',
+    category: 'coding',
+    titleKey: 'templates.items.databaseSchema.title',
+    descriptionKey: 'templates.items.databaseSchema.description',
+    icon: 'Database',
+    topicKey: 'templates.items.databaseSchema.topic',
+    defaultTargetAI: 'ChatGPT',
+    defaultComplexity: 8,
+  },
+  {
+    id: 'unit-tests',
+    category: 'coding',
+    titleKey: 'templates.items.unitTests.title',
+    descriptionKey: 'templates.items.unitTests.description',
+    icon: 'TestTube',
+    topicKey: 'templates.items.unitTests.topic',
+    defaultTargetAI: 'GitHubCopilot',
+    defaultComplexity: 7,
+  },
+  {
+    id: 'react-component',
+    category: 'coding',
+    titleKey: 'templates.items.reactComponent.title',
+    descriptionKey: 'templates.items.reactComponent.description',
+    icon: 'Component',
+    topicKey: 'templates.items.reactComponent.topic',
+    defaultTargetAI: 'Cursor',
+    defaultComplexity: 7,
+  },
+  {
+    id: 'full-stack-app',
+    category: 'coding',
+    titleKey: 'templates.items.fullStackApp.title',
+    descriptionKey: 'templates.items.fullStackApp.description',
+    icon: 'Layers',
+    topicKey: 'templates.items.fullStackApp.topic',
+    defaultTargetAI: 'Cursor',
+    defaultComplexity: 9,
+  },
+
+  // Image Templates
+  {
+    id: 'midjourney-portrait',
+    category: 'image',
+    titleKey: 'templates.items.midjourneyPortrait.title',
+    descriptionKey: 'templates.items.midjourneyPortrait.description',
+    icon: 'User',
+    topicKey: 'templates.items.midjourneyPortrait.topic',
+    defaultTargetAI: 'Midjourney',
+    defaultComplexity: 6,
+  },
+  {
+    id: 'midjourney-landscape',
+    category: 'image',
+    titleKey: 'templates.items.midjourneyLandscape.title',
+    descriptionKey: 'templates.items.midjourneyLandscape.description',
+    icon: 'Mountain',
+    topicKey: 'templates.items.midjourneyLandscape.topic',
+    defaultTargetAI: 'Midjourney',
+    defaultComplexity: 6,
+  },
+  {
+    id: 'midjourney-logo',
+    category: 'image',
+    titleKey: 'templates.items.midjourneyLogo.title',
+    descriptionKey: 'templates.items.midjourneyLogo.description',
+    icon: 'Hexagon',
+    topicKey: 'templates.items.midjourneyLogo.topic',
+    defaultTargetAI: 'Midjourney',
+    defaultComplexity: 5,
+  },
+  {
+    id: 'midjourney-product',
+    category: 'image',
+    titleKey: 'templates.items.midjourneyProduct.title',
+    descriptionKey: 'templates.items.midjourneyProduct.description',
+    icon: 'Camera',
+    topicKey: 'templates.items.midjourneyProduct.topic',
+    defaultTargetAI: 'Midjourney',
+    defaultComplexity: 6,
+  },
+  {
+    id: 'dalle-illustration',
+    category: 'image',
+    titleKey: 'templates.items.dalleIllustration.title',
+    descriptionKey: 'templates.items.dalleIllustration.description',
+    icon: 'Palette',
+    topicKey: 'templates.items.dalleIllustration.topic',
+    defaultTargetAI: 'DALL-E',
+    defaultComplexity: 6,
+  },
+  {
+    id: 'dalle-concept',
+    category: 'image',
+    titleKey: 'templates.items.dalleConcept.title',
+    descriptionKey: 'templates.items.dalleConcept.description',
+    icon: 'Sparkles',
+    topicKey: 'templates.items.dalleConcept.topic',
+    defaultTargetAI: 'DALL-E',
+    defaultComplexity: 7,
+  },
+
+  // Business Templates
+  {
+    id: 'business-plan',
+    category: 'business',
+    titleKey: 'templates.items.businessPlan.title',
+    descriptionKey: 'templates.items.businessPlan.description',
+    icon: 'Briefcase',
+    topicKey: 'templates.items.businessPlan.topic',
+    defaultTargetAI: 'Claude',
+    defaultComplexity: 9,
+  },
+  {
+    id: 'pitch-deck',
+    category: 'business',
+    titleKey: 'templates.items.pitchDeck.title',
+    descriptionKey: 'templates.items.pitchDeck.description',
+    icon: 'Presentation',
+    topicKey: 'templates.items.pitchDeck.topic',
+    defaultTargetAI: 'ChatGPT',
+    defaultComplexity: 8,
+  },
+  {
+    id: 'marketing-strategy',
+    category: 'business',
+    titleKey: 'templates.items.marketingStrategy.title',
+    descriptionKey: 'templates.items.marketingStrategy.description',
+    icon: 'TrendingUp',
+    topicKey: 'templates.items.marketingStrategy.topic',
+    defaultTargetAI: 'ChatGPT',
+    defaultComplexity: 8,
+  },
+  {
+    id: 'swot-analysis',
+    category: 'business',
+    titleKey: 'templates.items.swotAnalysis.title',
+    descriptionKey: 'templates.items.swotAnalysis.description',
+    icon: 'Target',
+    topicKey: 'templates.items.swotAnalysis.topic',
+    defaultTargetAI: 'ChatGPT',
+    defaultComplexity: 7,
+  },
+  {
+    id: 'job-description',
+    category: 'business',
+    titleKey: 'templates.items.jobDescription.title',
+    descriptionKey: 'templates.items.jobDescription.description',
+    icon: 'Users',
+    topicKey: 'templates.items.jobDescription.topic',
+    defaultTargetAI: 'ChatGPT',
+    defaultComplexity: 6,
+  },
+
+  // Creative Templates
+  {
+    id: 'story-plot',
+    category: 'creative',
+    titleKey: 'templates.items.storyPlot.title',
+    descriptionKey: 'templates.items.storyPlot.description',
+    icon: 'BookOpen',
+    topicKey: 'templates.items.storyPlot.topic',
+    defaultTargetAI: 'Claude',
+    defaultComplexity: 8,
+  },
+  {
+    id: 'character-design',
+    category: 'creative',
+    titleKey: 'templates.items.characterDesign.title',
+    descriptionKey: 'templates.items.characterDesign.description',
+    icon: 'UserCircle',
+    topicKey: 'templates.items.characterDesign.topic',
+    defaultTargetAI: 'ChatGPT',
+    defaultComplexity: 7,
+  },
+  {
+    id: 'video-script',
+    category: 'creative',
+    titleKey: 'templates.items.videoScript.title',
+    descriptionKey: 'templates.items.videoScript.description',
+    icon: 'Video',
+    topicKey: 'templates.items.videoScript.topic',
+    defaultTargetAI: 'ChatGPT',
+    defaultComplexity: 7,
+  },
+  {
+    id: 'podcast-outline',
+    category: 'creative',
+    titleKey: 'templates.items.podcastOutline.title',
+    descriptionKey: 'templates.items.podcastOutline.description',
+    icon: 'Mic',
+    topicKey: 'templates.items.podcastOutline.topic',
+    defaultTargetAI: 'ChatGPT',
+    defaultComplexity: 6,
+  },
+  {
+    id: 'social-media',
+    category: 'creative',
+    titleKey: 'templates.items.socialMedia.title',
+    descriptionKey: 'templates.items.socialMedia.description',
+    icon: 'Share2',
+    topicKey: 'templates.items.socialMedia.topic',
+    defaultTargetAI: 'ChatGPT',
+    defaultComplexity: 7,
+  },
+  {
+    id: 'creative-writing',
+    category: 'creative',
+    titleKey: 'templates.items.creativeWriting.title',
+    descriptionKey: 'templates.items.creativeWriting.description',
+    icon: 'Feather',
+    topicKey: 'templates.items.creativeWriting.topic',
+    defaultTargetAI: 'Claude',
+    defaultComplexity: 7,
+  },
+];
+
+/**
+ * Get templates by category
+ * @param {string} categoryId - Category ID or 'all'
+ * @returns {Array} Filtered templates
+ */
+export const getTemplatesByCategory = (categoryId) => {
+  if (categoryId === 'all') {
+    return promptTemplates;
+  }
+  return promptTemplates.filter((template) => template.category === categoryId);
+};
+
+/**
+ * Get template by ID
+ * @param {string} templateId - Template ID
+ * @returns {object|null} Template object or null
+ */
+export const getTemplateById = (templateId) => {
+  return promptTemplates.find((template) => template.id === templateId) || null;
+};

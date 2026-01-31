@@ -1,11 +1,22 @@
 import { motion } from 'framer-motion';
-import { Settings, Github, Sparkles } from 'lucide-react';
+import { Settings, Github, Sparkles, History, Heart } from 'lucide-react';
+import LanguageSelector from './LanguageSelector';
 
 /**
- * Header Bileşeni
- * Üst navigasyon ve ayarlar butonu
+ * Header Component
+ * Top navigation with settings, language selector, and feature buttons
  */
-const Header = ({ onSettingsClick, hasApiKey }) => {
+const Header = ({ 
+  onSettingsClick, 
+  hasApiKey, 
+  onHistoryClick, 
+  onFavoritesClick,
+  onLanguageChange,
+  currentLanguage,
+  historyCount,
+  favoritesCount,
+  t 
+}) => {
   return (
     <motion.header
       initial={{ opacity: 0, y: -20 }}
@@ -21,31 +32,69 @@ const Header = ({ onSettingsClick, hasApiKey }) => {
               <div className="absolute inset-0 bg-neon-cyan/20 blur-lg rounded-full" />
               <Sparkles className="relative w-6 h-6 text-neon-cyan" />
             </div>
-            <span className="text-xl font-bold gradient-text">PromptNexus</span>
+            <span className="text-xl font-bold gradient-text">{t('appName')}</span>
           </div>
 
-          {/* Sağ Taraf */}
-          <div className="flex items-center gap-2">
-            {/* API Durum Göstergesi */}
-            <div className="hidden sm:flex items-center gap-2 mr-4">
+          {/* Right Side */}
+          <div className="flex items-center gap-1 sm:gap-2">
+            {/* API Status Indicator */}
+            <div className="hidden md:flex items-center gap-2 mr-2">
               <div className={`w-2 h-2 rounded-full ${hasApiKey ? 'bg-green-400 animate-pulse' : 'bg-yellow-400'}`} />
               <span className="text-xs text-text-muted">
-                {hasApiKey ? 'API Bağlı' : 'API Gerekli'}
+                {hasApiKey ? t('apiConnected') : t('apiRequired')}
               </span>
             </div>
 
+            {/* History Button */}
+            <motion.button
+              onClick={onHistoryClick}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="relative p-2 rounded-lg text-text-muted hover:text-text-primary hover:bg-deepSpace-card transition-colors"
+              title={t('history.title')}
+            >
+              <History className="w-5 h-5" />
+              {historyCount > 0 && (
+                <span className="absolute -top-1 -right-1 w-4 h-4 bg-neon-cyan text-deepSpace-bg text-xs font-bold rounded-full flex items-center justify-center">
+                  {historyCount > 9 ? '9+' : historyCount}
+                </span>
+              )}
+            </motion.button>
+
+            {/* Favorites Button */}
+            <motion.button
+              onClick={onFavoritesClick}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="relative p-2 rounded-lg text-text-muted hover:text-text-primary hover:bg-deepSpace-card transition-colors"
+              title={t('favorites.title')}
+            >
+              <Heart className="w-5 h-5" />
+              {favoritesCount > 0 && (
+                <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-400 text-white text-xs font-bold rounded-full flex items-center justify-center">
+                  {favoritesCount > 9 ? '9+' : favoritesCount}
+                </span>
+              )}
+            </motion.button>
+
+            {/* Language Selector */}
+            <LanguageSelector 
+              currentLanguage={currentLanguage}
+              onLanguageChange={onLanguageChange}
+            />
+
             {/* GitHub Link */}
             <a
-              href="#"
-              target="https://github.com/umutardaayhan/promptnexus"
+              href="https://github.com/umutardaayhan/PromptNexus"
+              target="_blank"
               rel="noopener noreferrer"
-              className="p-2 rounded-lg text-text-muted hover:text-text-primary hover:bg-deepSpace-card transition-colors"
+              className="hidden sm:flex p-2 rounded-lg text-text-muted hover:text-text-primary hover:bg-deepSpace-card transition-colors"
               title="GitHub"
             >
               <Github className="w-5 h-5" />
             </a>
 
-            {/* Ayarlar Butonu */}
+            {/* Settings Button */}
             <motion.button
               onClick={onSettingsClick}
               whileHover={{ scale: 1.05 }}
@@ -53,7 +102,7 @@ const Header = ({ onSettingsClick, hasApiKey }) => {
               className="flex items-center gap-2 px-3 py-2 rounded-lg bg-neon-cyan/10 text-neon-cyan hover:bg-neon-cyan/20 transition-colors"
             >
               <Settings className="w-4 h-4" />
-              <span className="hidden sm:inline text-sm font-medium">Ayarlar</span>
+              <span className="hidden sm:inline text-sm font-medium">{t('settings')}</span>
             </motion.button>
           </div>
         </nav>

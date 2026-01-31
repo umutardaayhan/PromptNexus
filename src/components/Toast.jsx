@@ -3,8 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, AlertCircle, CheckCircle, Info } from 'lucide-react';
 
 /**
- * Toast Bileşeni
- * Kullanıcı bildirimleri için toast mesajları
+ * Toast Component
+ * Toast messages for user notifications
  */
 const Toast = ({ message, type = 'info', isVisible, onClose, duration = 5000 }) => {
   useEffect(() => {

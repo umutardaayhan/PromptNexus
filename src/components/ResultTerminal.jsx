@@ -1,12 +1,19 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Copy, Check, Terminal, RefreshCw, Download } from 'lucide-react';
+import { Copy, Check, Terminal, RefreshCw, Download, Heart } from 'lucide-react';
 
 /**
- * ResultTerminal Bileşeni
- * Kod bloğu stili sonuç ekranı - Kopyalama özelliği
+ * ResultTerminal Component
+ * Code block style result display - Copy feature
  */
-const ResultTerminal = ({ result, isLoading, onReset }) => {
+const ResultTerminal = ({ 
+  result, 
+  isLoading, 
+  onReset, 
+  onToggleFavorite,
+  isFavorite,
+  t 
+}) => {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = async () => {
@@ -17,7 +24,7 @@ const ResultTerminal = ({ result, isLoading, onReset }) => {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
-      console.error('Kopyalama hatası:', err);
+      console.error('Copy error:', err);
     }
   };
 
@@ -43,7 +50,7 @@ const ResultTerminal = ({ result, isLoading, onReset }) => {
       className="w-full max-w-2xl mx-auto"
     >
       <div className="glass-card overflow-hidden">
-        {/* Terminal Başlık */}
+        {/* Terminal Header */}
         <div className="terminal-header">
           <div className="flex items-center gap-2">
             <div className="terminal-dot red" />
@@ -52,13 +59,27 @@ const ResultTerminal = ({ result, isLoading, onReset }) => {
           </div>
           <div className="flex items-center gap-2 ml-4 text-text-muted">
             <Terminal className="w-4 h-4" />
-            <span className="text-sm font-mono">sonuc.terminal</span>
+            <span className="text-sm font-mono">{t('resultTerminal')}</span>
           </div>
           
-          {/* Aksiyon Butonları */}
+          {/* Action Buttons */}
           <div className="ml-auto flex items-center gap-2">
             {result && (
               <>
+                <motion.button
+                  onClick={onToggleFavorite}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
+                    isFavorite 
+                      ? 'bg-red-500/20 text-red-400' 
+                      : 'bg-deepSpace-card text-text-secondary hover:text-red-400'
+                  }`}
+                  title={isFavorite ? t('favorites.remove') : t('favorites.add')}
+                >
+                  <Heart className={`w-3.5 h-3.5 ${isFavorite ? 'fill-current' : ''}`} />
+                </motion.button>
+
                 <motion.button
                   onClick={handleCopy}
                   whileHover={{ scale: 1.05 }}
@@ -75,7 +96,7 @@ const ResultTerminal = ({ result, isLoading, onReset }) => {
                         className="flex items-center gap-1.5"
                       >
                         <Check className="w-3.5 h-3.5" />
-                        Kopyalandı
+                        {t('copiedButton')}
                       </motion.span>
                     ) : (
                       <motion.span
@@ -86,7 +107,7 @@ const ResultTerminal = ({ result, isLoading, onReset }) => {
                         className="flex items-center gap-1.5"
                       >
                         <Copy className="w-3.5 h-3.5" />
-                        Kopyala
+                        {t('copyButton')}
                       </motion.span>
                     )}
                   </AnimatePresence>
@@ -97,7 +118,7 @@ const ResultTerminal = ({ result, isLoading, onReset }) => {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md bg-deepSpace-card text-text-secondary hover:text-text-primary transition-colors"
-                  title="İndir"
+                  title={t('downloadButton')}
                 >
                   <Download className="w-3.5 h-3.5" />
                 </motion.button>
@@ -107,7 +128,7 @@ const ResultTerminal = ({ result, isLoading, onReset }) => {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md bg-deepSpace-card text-text-secondary hover:text-text-primary transition-colors"
-                  title="Yeni Prompt"
+                  title={t('newPromptButton')}
                 >
                   <RefreshCw className="w-3.5 h-3.5" />
                 </motion.button>
@@ -116,7 +137,7 @@ const ResultTerminal = ({ result, isLoading, onReset }) => {
           </div>
         </div>
 
-        {/* Terminal İçerik */}
+        {/* Terminal Content */}
         <div className="terminal-body min-h-[200px] max-h-[500px] overflow-y-auto">
           <AnimatePresence mode="wait">
             {isLoading ? (
@@ -129,7 +150,7 @@ const ResultTerminal = ({ result, isLoading, onReset }) => {
               >
                 <div className="spinner" />
                 <p className="text-text-muted text-sm animate-pulse">
-                  Prompt oluşturuluyor...
+                  {t('generating')}
                 </p>
               </motion.div>
             ) : result ? (
@@ -153,9 +174,9 @@ const ResultTerminal = ({ result, isLoading, onReset }) => {
                 className="flex flex-col items-center justify-center h-[200px] gap-3 text-text-muted"
               >
                 <Terminal className="w-10 h-10 opacity-30" />
-                <p className="text-sm">Sonuç burada görünecek</p>
+                <p className="text-sm">{t('resultPlaceholder')}</p>
                 <p className="text-xs opacity-60">
-                  Sol taraftaki formu doldurarak başlayın
+                  {t('resultHint')}
                 </p>
               </motion.div>
             )}
@@ -167,8 +188,8 @@ const ResultTerminal = ({ result, isLoading, onReset }) => {
 };
 
 /**
- * Typewriter efekti bileşeni
- * Metni karakter karakter gösterir
+ * Typewriter effect component
+ * Displays text character by character
  */
 const TypewriterText = ({ text }) => {
   return (

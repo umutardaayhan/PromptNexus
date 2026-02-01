@@ -46,9 +46,9 @@ const ComplexitySlider = ({ value, onChange, disabled, t }) => {
   const info = getComplexityInfo(value);
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-2 sm:space-y-3">
       {/* Label and Value */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-0">
         <label className="flex items-center gap-2 text-sm font-medium text-text-primary">
           <Thermometer className="w-4 h-4 text-neon-cyan" />
           {t('creativeTemperature')}
@@ -57,7 +57,7 @@ const ComplexitySlider = ({ value, onChange, disabled, t }) => {
           key={info.label}
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
-          className={`flex items-center gap-1.5 text-sm font-semibold ${info.color}`}
+          className={`flex items-center gap-1.5 text-xs sm:text-sm font-semibold ${info.color}`}
         >
           {info.icon}
           <span>{info.label}</span>

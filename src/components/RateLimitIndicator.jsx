@@ -48,18 +48,18 @@ const RateLimitIndicator = ({
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-2xl mx-auto mb-4"
+        className="w-full max-w-2xl mx-auto mb-4 px-2 sm:px-0"
       >
-        <div className="glass-card p-4 border-red-400/30 bg-red-400/5">
-          <div className="flex items-start gap-3">
-            <div className="p-2 rounded-lg bg-red-400/10">
-              <AlertTriangle className="w-5 h-5 text-red-400" />
+        <div className="glass-card p-3 sm:p-4 border-red-400/30 bg-red-400/5">
+          <div className="flex items-start gap-2 sm:gap-3">
+            <div className="p-1.5 sm:p-2 rounded-lg bg-red-400/10 flex-shrink-0">
+              <AlertTriangle className="w-4 h-4 sm:w-5 sm:h-5 text-red-400" />
             </div>
-            <div className="flex-1">
-              <h3 className="font-semibold text-red-400 mb-1">
+            <div className="flex-1 min-w-0">
+              <h3 className="font-semibold text-red-400 mb-1 text-sm sm:text-base">
                 {t('rateLimit.title')}
               </h3>
-              <p className="text-sm text-text-secondary mb-2">
+              <p className="text-xs sm:text-sm text-text-secondary mb-2">
                 {t('rateLimit.description', { maxRequests })} {t('rateLimit.resetsIn', { time: getTimeUntilReset })}
               </p>
               <div className="flex items-center gap-2 text-xs text-text-muted">
@@ -77,23 +77,23 @@ const RateLimitIndicator = ({
     <motion.div
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="w-full max-w-2xl mx-auto mb-4"
+      className="w-full max-w-2xl mx-auto mb-4 px-2 sm:px-0"
     >
-      <div className={`glass-card p-3 ${borderColor} ${bgColor}`}>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className={`p-1.5 rounded-lg ${bgColor}`}>
-              <Icon className={`w-4 h-4 ${statusColor}`} />
+      <div className={`glass-card p-2 sm:p-3 ${borderColor} ${bgColor}`}>
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+            <div className={`p-1 sm:p-1.5 rounded-lg ${bgColor} flex-shrink-0`}>
+              <Icon className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${statusColor}`} />
             </div>
-            <div>
-              <p className="text-sm font-medium text-text-primary">
+            <div className="min-w-0">
+              <p className="text-xs sm:text-sm font-medium text-text-primary truncate">
                 {hasDynamicData ? (
                   <>API: {effectiveUsed}/{effectiveMaxRequests}</>
                 ) : (
                   t('rateLimit.usage', { count: requestCount, max: maxRequests })
                 )}
               </p>
-              <p className="text-xs text-text-muted">
+              <p className="text-xs text-text-muted hidden sm:block">
                 {hasDynamicData ? (
                   <>Gerçek zamanlı: {effectiveRemaining} kaldı</>
                 ) : (
@@ -104,7 +104,7 @@ const RateLimitIndicator = ({
           </div>
           
           {/* Progress bar */}
-          <div className="w-24 h-2 bg-deepSpace-card rounded-full overflow-hidden">
+          <div className="w-16 sm:w-24 h-2 bg-deepSpace-card rounded-full overflow-hidden flex-shrink-0">
             <motion.div
               initial={{ width: 0 }}
               animate={{ width: `${usagePercentage}%` }}
@@ -117,7 +117,7 @@ const RateLimitIndicator = ({
         </div>
         
         {usagePercentage >= 70 && (
-          <p className="mt-2 text-xs text-text-muted">
+          <p className="mt-2 text-xs text-text-muted hidden sm:block">
             {t('rateLimit.approachingLimit')}
           </p>
         )}

@@ -51,28 +51,28 @@ const ResultTerminal = ({
     >
       <div className="glass-card overflow-hidden">
         {/* Terminal Header */}
-        <div className="terminal-header">
+        <div className="terminal-header flex-wrap gap-2">
           <div className="flex items-center gap-2">
             <div className="terminal-dot red" />
             <div className="terminal-dot yellow" />
             <div className="terminal-dot green" />
           </div>
-          <div className="flex items-center gap-2 ml-4 text-text-muted">
+          <div className="flex items-center gap-2 ml-0 sm:ml-4 text-text-muted">
             <Terminal className="w-4 h-4" />
-            <span className="text-sm font-mono">{t('resultTerminal')}</span>
+            <span className="text-xs sm:text-sm font-mono">{t('resultTerminal')}</span>
           </div>
           
           {/* Action Buttons */}
-          <div className="ml-auto flex items-center gap-2">
+          <div className="ml-auto flex items-center gap-1 sm:gap-2">
             {result && (
               <>
                 <motion.button
                   onClick={onToggleFavorite}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
-                    isFavorite 
-                      ? 'bg-red-500/20 text-red-400' 
+                  className={`flex items-center gap-1 px-2 sm:px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
+                    isFavorite
+                      ? 'bg-red-500/20 text-red-400'
                       : 'bg-deepSpace-card text-text-secondary hover:text-red-400'
                   }`}
                   title={isFavorite ? t('favorites.remove') : t('favorites.add')}
@@ -84,7 +84,7 @@ const ResultTerminal = ({
                   onClick={handleCopy}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md bg-neon-cyan/10 text-neon-cyan hover:bg-neon-cyan/20 transition-colors"
+                  className="flex items-center gap-1 px-2 sm:px-3 py-1.5 text-xs font-medium rounded-md bg-neon-cyan/10 text-neon-cyan hover:bg-neon-cyan/20 transition-colors"
                 >
                   <AnimatePresence mode="wait">
                     {copied ? (
@@ -117,7 +117,7 @@ const ResultTerminal = ({
                   onClick={handleDownload}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md bg-deepSpace-card text-text-secondary hover:text-text-primary transition-colors"
+                  className="flex items-center gap-1 px-2 sm:px-3 py-1.5 text-xs font-medium rounded-md bg-deepSpace-card text-text-secondary hover:text-text-primary transition-colors"
                   title={t('downloadButton')}
                 >
                   <Download className="w-3.5 h-3.5" />
@@ -127,7 +127,7 @@ const ResultTerminal = ({
                   onClick={onReset}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md bg-deepSpace-card text-text-secondary hover:text-text-primary transition-colors"
+                  className="flex items-center gap-1 px-2 sm:px-3 py-1.5 text-xs font-medium rounded-md bg-deepSpace-card text-text-secondary hover:text-text-primary transition-colors"
                   title={t('newPromptButton')}
                 >
                   <RefreshCw className="w-3.5 h-3.5" />
@@ -138,7 +138,7 @@ const ResultTerminal = ({
         </div>
 
         {/* Terminal Content */}
-        <div className="terminal-body min-h-[200px] max-h-[500px] overflow-y-auto">
+        <div className="terminal-body min-h-[150px] sm:min-h-[200px] max-h-[300px] sm:max-h-[500px] overflow-y-auto p-3 sm:p-4">
           <AnimatePresence mode="wait">
             {isLoading ? (
               <motion.div
@@ -161,7 +161,7 @@ const ResultTerminal = ({
                 transition={{ duration: 0.5 }}
                 className="relative"
               >
-                <pre className="text-text-primary font-mono text-sm leading-relaxed whitespace-pre-wrap break-words">
+                <pre className="text-text-primary font-mono text-xs sm:text-sm leading-relaxed whitespace-pre-wrap break-words">
                   <TypewriterText text={result} />
                 </pre>
               </motion.div>

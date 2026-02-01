@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.3] - 2026-02-01
+
+### Fixed
+- **Full Mobile Responsiveness**: Complete responsive design overhaul for all screen sizes
+  - HeroSection: Responsive padding, font sizes, and spacing for mobile devices
+  - InputLaboratory: Stacked buttons on mobile, responsive padding and text sizes
+  - ResultTerminal: Flexible header layout, responsive action buttons, smaller text on mobile
+  - TemplateGallery: Responsive grid, smaller cards on mobile, scrollable category tabs
+  - Header: Compact layout on mobile, smaller icons and buttons
+  - Footer: Reorganized layout for mobile, centered technologies section
+  - HistoryPanel & FavoritesPanel: Responsive modal sizing, hidden secondary info on mobile
+  - SettingsModal: Stacked footer buttons on mobile
+  - Toast: Full-width on mobile with proper text wrapping
+  - LanguageSelector: Scrollable dropdown on mobile
+  - RateLimitIndicator: Compact layout on mobile
+  - ComplexitySlider: Responsive label layout
+
 ## [1.2.2] - 2026-01-31
 
 ### Changed

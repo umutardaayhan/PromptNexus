@@ -86,7 +86,7 @@ const SettingsModal = ({ isOpen, onClose, apiKey, onSave, t }) => {
           />
 
           {/* Modal Container - Centered with flexbox */}
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4">
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -95,26 +95,26 @@ const SettingsModal = ({ isOpen, onClose, apiKey, onSave, t }) => {
             >
               <div className="glass-card overflow-hidden">
                 {/* Header */}
-                <div className="flex items-center justify-between p-6 border-b border-neon-cyan/10">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-lg bg-neon-cyan/10">
-                      <Key className="w-5 h-5 text-neon-cyan" />
+                <div className="flex items-center justify-between p-4 sm:p-6 border-b border-neon-cyan/10">
+                  <div className="flex items-center gap-2 sm:gap-3">
+                    <div className="p-1.5 sm:p-2 rounded-lg bg-neon-cyan/10">
+                      <Key className="w-4 h-4 sm:w-5 sm:h-5 text-neon-cyan" />
                     </div>
                     <div>
-                      <h2 className="text-lg font-semibold text-text-primary">{t('settingsTitle')}</h2>
+                      <h2 className="text-base sm:text-lg font-semibold text-text-primary">{t('settingsTitle')}</h2>
                       <p className="text-xs text-text-muted">{t('settingsSubtitle')}</p>
                     </div>
                   </div>
                   <button
                     onClick={onClose}
-                    className="p-2 rounded-lg hover:bg-deepSpace-card transition-colors"
+                    className="p-1.5 sm:p-2 rounded-lg hover:bg-deepSpace-card transition-colors"
                   >
                     <X className="w-5 h-5 text-text-muted hover:text-text-primary" />
                   </button>
                 </div>
 
                 {/* Body */}
-                <div className="p-6 space-y-4">
+                <div className="p-4 sm:p-6 space-y-4">
                   {/* API Key Input */}
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-text-primary">
@@ -189,33 +189,35 @@ const SettingsModal = ({ isOpen, onClose, apiKey, onSave, t }) => {
                 </div>
 
                 {/* Footer */}
-                <div className="flex items-center justify-end gap-3 p-6 border-t border-neon-cyan/10">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-2 sm:gap-3 p-4 sm:p-6 border-t border-neon-cyan/10">
                   <button
                     onClick={handleClear}
-                    className="px-4 py-2 text-sm font-medium text-text-secondary hover:text-text-primary transition-colors"
+                    className="px-4 py-2 text-sm font-medium text-text-secondary hover:text-text-primary transition-colors order-2 sm:order-1"
                   >
                     {t('clearButton')}
                   </button>
-                  <button
-                    onClick={onClose}
-                    className="btn-secondary"
-                  >
-                    {t('cancelButton')}
-                  </button>
-                  <button
-                    onClick={handleSave}
-                    disabled={isValidating}
-                    className="btn-primary flex items-center gap-2 disabled:opacity-50"
-                  >
-                    {isValidating ? (
-                      <>
-                        <div className="w-4 h-4 border-2 border-deepSpace-bg border-t-transparent rounded-full animate-spin" />
-                        <span>{t('validating')}</span>
-                      </>
-                    ) : (
-                      <span>{t('saveButton')}</span>
-                    )}
-                  </button>
+                  <div className="flex gap-2 order-1 sm:order-2">
+                    <button
+                      onClick={onClose}
+                      className="flex-1 sm:flex-none btn-secondary text-sm"
+                    >
+                      {t('cancelButton')}
+                    </button>
+                    <button
+                      onClick={handleSave}
+                      disabled={isValidating}
+                      className="flex-1 sm:flex-none btn-primary flex items-center justify-center gap-2 disabled:opacity-50 text-sm"
+                    >
+                      {isValidating ? (
+                        <>
+                          <div className="w-4 h-4 border-2 border-deepSpace-bg border-t-transparent rounded-full animate-spin" />
+                          <span>{t('validating')}</span>
+                        </>
+                      ) : (
+                        <span>{t('saveButton')}</span>
+                      )}
+                    </button>
+                  </div>
                 </div>
               </div>
             </motion.div>

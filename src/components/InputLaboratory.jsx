@@ -135,16 +135,16 @@ const InputLaboratory = ({
       transition={{ duration: 0.6, delay: 0.2 }}
       className="w-full max-w-2xl mx-auto"
     >
-      <div className="glass-card p-6 md:p-8">
+      <div className="glass-card p-4 sm:p-6 md:p-8">
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-3">
+        <div className="flex items-center justify-between mb-4 sm:mb-6">
+          <div className="flex items-center gap-2 sm:gap-3">
             <div className="p-2 rounded-lg bg-neon-cyan/10">
-              <Wand2 className="w-5 h-5 text-neon-cyan" />
+              <Wand2 className="w-4 h-4 sm:w-5 sm:h-5 text-neon-cyan" />
             </div>
             <div>
-              <h2 className="text-xl font-semibold text-text-primary">{t('inputLabTitle')}</h2>
-              <p className="text-sm text-text-muted">{t('inputLabSubtitle')}</p>
+              <h2 className="text-lg sm:text-xl font-semibold text-text-primary">{t('inputLabTitle')}</h2>
+              <p className="text-xs sm:text-sm text-text-muted">{t('inputLabSubtitle')}</p>
             </div>
           </div>
           
@@ -153,7 +153,7 @@ const InputLaboratory = ({
             onClick={onOpenTemplates}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="flex items-center gap-2 px-3 py-2 rounded-lg bg-neon-cyan/10 text-neon-cyan hover:bg-neon-cyan/20 transition-colors text-sm"
+            className="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-2 rounded-lg bg-neon-cyan/10 text-neon-cyan hover:bg-neon-cyan/20 transition-colors text-sm"
           >
             <LayoutGrid className="w-4 h-4" />
             <span className="hidden sm:inline">{t('templates.title')}</span>
@@ -187,7 +187,7 @@ const InputLaboratory = ({
           </motion.div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
           {/* Topic Text Area */}
           <div className="space-y-2">
             <label className="flex items-center gap-2 text-sm font-medium text-text-primary">
@@ -198,8 +198,8 @@ const InputLaboratory = ({
               value={topic}
               onChange={(e) => setTopic(e.target.value)}
               placeholder={t('topicPlaceholder')}
-              className="input-field"
-              rows={4}
+              className="input-field text-sm sm:text-base"
+              rows={3}
               disabled={isLoading}
             />
             <p className="text-xs text-text-muted">
@@ -328,22 +328,22 @@ const InputLaboratory = ({
           />
 
           {/* Generate and Randomize Buttons */}
-          <div className="flex gap-3">
+          <div className="flex flex-col sm:flex-row gap-3">
             <motion.button
               type="submit"
               disabled={!topic.trim() || isLoading}
               whileHover={{ scale: topic.trim() && !isLoading ? 1.02 : 1 }}
               whileTap={{ scale: topic.trim() && !isLoading ? 0.98 : 1 }}
-              className="flex-1 btn-primary flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 btn-primary flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base py-3 sm:py-2.5"
             >
               {isLoading ? (
                 <>
-                  <div className="w-5 h-5 border-2 border-deepSpace-bg border-t-transparent rounded-full animate-spin" />
+                  <div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-deepSpace-bg border-t-transparent rounded-full animate-spin" />
                   <span>{t('generatingButton')}</span>
                 </>
               ) : (
                 <>
-                  <Wand2 className="w-5 h-5" />
+                  <Wand2 className="w-4 h-4 sm:w-5 sm:h-5" />
                   <span>{t('generateButton')}</span>
                 </>
               )}
@@ -355,13 +355,13 @@ const InputLaboratory = ({
               disabled={isLoading}
               whileHover={{ scale: !isLoading ? 1.05 : 1 }}
               whileTap={{ scale: !isLoading ? 0.95 : 1 }}
-              className="px-4 btn-secondary flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-3 sm:px-4 btn-secondary flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base py-3 sm:py-2.5"
               title={t('randomizer.buttonTooltip')}
             >
               {isLoading ? (
-                <div className="w-5 h-5 border-2 border-deepSpace-bg border-t-transparent rounded-full animate-spin" />
+                <div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-deepSpace-bg border-t-transparent rounded-full animate-spin" />
               ) : (
-                <Shuffle className="w-5 h-5" />
+                <Shuffle className="w-4 h-4 sm:w-5 sm:h-5" />
               )}
               <span className="hidden sm:inline">{t('randomizer.button')}</span>
             </motion.button>

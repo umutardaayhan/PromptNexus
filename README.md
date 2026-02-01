@@ -1,15 +1,15 @@
-# PromptNexus v1.2.2 ⚡
+# PromptNexus v1.2.3 ⚡
 
 ![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=white)
 ![Vite](https://img.shields.io/badge/Vite-5-646CFF?logo=vite&logoColor=white)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind-3-38B2AC?logo=tailwind-css&logoColor=white)
 ![License](https://img.shields.io/badge/License-MIT-green.svg)
 
-🌐 **Live Demo / Canlı Site:** [https://prompt-nexus-one.vercel.app] 
+🌐 **Live Demo / Canlı Site:** [https://prompt-nexus-one.vercel.app]
 
 > <div align="center">
   <h3>
-    <a href="#-english">🇬🇧 English</a> | 
+    <a href="#-english">🇬🇧 English</a> |
     <a href="#-türkçe">🇹🇷 Türkçe</a>
   </h3>
 </div>
@@ -26,6 +26,7 @@ PromptNexus is a modern web application that transforms your ideas into professi
 
 - 🤖 **Gemini 2.5 Flash Integration** - Powerful Google AI model support
 - 🌐 **English-Only Prompt Generation** - All prompts sent to Gemini in English for better AI comprehension
+- 📱 **Fully Responsive** - Optimized for all screen sizes from mobile to desktop
 - 🎨 **Deep Space Theme** - Modern, dark theme with easy-on-the-eyes interface
 - ⚡ **Fast & Responsive** - Instant prompt generation
 - 🎯 **Multi-AI Support** - Optimized for ChatGPT, Claude, Midjourney, DALL-E, Gemini, and Notebook LM
@@ -42,6 +43,16 @@ PromptNexus is a modern web application that transforms your ideas into professi
 - 💫 **Framer Motion Animations** - Smooth user experience
 - 📥 **Download Prompts** - Save prompts as text files
 - 🌐 **Full i18n Support** - Complete Turkish and English localization
+
+### 🆕 What's New in v1.2.3
+
+- **Full Mobile Responsiveness** - Complete responsive design overhaul for all screen sizes:
+  - HeroSection, InputLaboratory, ResultTerminal fully responsive
+  - TemplateGallery with responsive grid and scrollable tabs
+  - Header, Footer optimized for mobile devices
+  - All modals (Settings, History, Favorites) responsive sizing
+  - Toast notifications full-width on mobile
+  - Language selector with scrollable dropdown
 
 ### 🆕 What's New in v1.2.2
 

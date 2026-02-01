@@ -13,22 +13,14 @@ const Footer = ({ t }) => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5, delay: 0.5 }}
-      className="w-full py-8 px-4 mt-16"
+      className="w-full py-6 sm:py-8 px-3 sm:px-4 mt-8 sm:mt-16"
     >
       <div className="max-w-6xl mx-auto">
-        <div className="divider mb-8" />
+        <div className="divider mb-6 sm:mb-8" />
         
-        <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-          {/* Left - Copyright */}
-          <div className="flex items-center gap-1 text-sm text-text-muted">
-            <span>&copy; {currentYear} PromptNexus.</span>
-            <span className="flex items-center gap-1">
-              <Heart className="w-3.5 h-3.5 text-red-400 fill-red-400" /> {t('footer.madeWith')}
-            </span>
-          </div>
-
+        <div className="flex flex-col items-center justify-center gap-4 sm:gap-6">
           {/* Center - Technologies */}
-          <div className="flex items-center gap-4 text-xs text-text-muted">
+          <div className="flex items-center gap-3 sm:gap-4 text-xs text-text-muted flex-wrap justify-center">
             <span>React</span>
             <span className="w-1 h-1 rounded-full bg-text-muted" />
             <span>Vite</span>
@@ -38,26 +30,37 @@ const Footer = ({ t }) => {
             <span>Gemini</span>
           </div>
 
-          {/* Right - Links */}
-          <div className="flex items-center gap-4">
-            <a
-              href="https://ai.google.dev/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-1 text-sm text-text-muted hover:text-neon-cyan transition-colors"
-            >
-              Gemini API
-              <ExternalLink className="w-3 h-3" />
-            </a>
-            <a
-              href="https://aistudio.google.com/app/apikey"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-1 text-sm text-text-muted hover:text-neon-cyan transition-colors"
-            >
-              {t('footer.getApiKey')}
-              <ExternalLink className="w-3 h-3" />
-            </a>
+          {/* Bottom Row - Copyright & Links */}
+          <div className="flex flex-col sm:flex-row items-center justify-between w-full gap-3 sm:gap-4">
+            {/* Left - Copyright */}
+            <div className="flex items-center gap-1 text-xs sm:text-sm text-text-muted order-2 sm:order-1">
+              <span>&copy; {currentYear} PromptNexus.</span>
+              <span className="flex items-center gap-1">
+                <Heart className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-red-400 fill-red-400" /> {t('footer.madeWith')}
+              </span>
+            </div>
+
+            {/* Right - Links */}
+            <div className="flex items-center gap-3 sm:gap-4 order-1 sm:order-2">
+              <a
+                href="https://ai.google.dev/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1 text-xs sm:text-sm text-text-muted hover:text-neon-cyan transition-colors"
+              >
+                Gemini API
+                <ExternalLink className="w-3 h-3" />
+              </a>
+              <a
+                href="https://aistudio.google.com/app/apikey"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1 text-xs sm:text-sm text-text-muted hover:text-neon-cyan transition-colors"
+              >
+                {t('footer.getApiKey')}
+                <ExternalLink className="w-3 h-3" />
+              </a>
+            </div>
           </div>
         </div>
       </div>

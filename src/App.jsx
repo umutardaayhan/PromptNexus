@@ -348,13 +348,13 @@ function App() {
       />
 
       {/* Main Content */}
-      <main className="pt-24 pb-8 px-4">
+      <main className="pt-20 sm:pt-24 pb-6 sm:pb-8 px-3 sm:px-4">
         <div className="max-w-6xl mx-auto">
           {/* Hero Section */}
           <HeroSection t={t} />
 
           {/* Content Grid */}
-          <div className="mt-12 grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+          <div className="mt-8 sm:mt-12 grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 items-start">
             {/* Left Side - Input Form */}
             <motion.div
               initial={{ opacity: 0, x: -30 }}

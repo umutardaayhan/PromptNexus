@@ -36,17 +36,17 @@ const Toast = ({ message, type = 'info', isVisible, onClose, duration = 5000 }) 
           animate={{ opacity: 1, x: 0, scale: 1 }}
           exit={{ opacity: 0, x: 100, scale: 0.9 }}
           transition={{ duration: 0.3, ease: 'easeOut' }}
-          className={`fixed bottom-6 right-6 z-50 max-w-md`}
+          className={`fixed bottom-4 sm:bottom-6 right-3 sm:right-6 z-50 max-w-[calc(100vw-1.5rem)] sm:max-w-md w-auto`}
         >
           <div className={`toast ${borderColors[type]}`}>
-            <div className="flex items-start gap-3">
+            <div className="flex items-start gap-2 sm:gap-3">
               {icons[type]}
-              <div className="flex-1">
-                <p className="text-sm text-text-primary">{message}</p>
+              <div className="flex-1 min-w-0">
+                <p className="text-xs sm:text-sm text-text-primary break-words">{message}</p>
               </div>
               <button
                 onClick={onClose}
-                className="p-1 rounded hover:bg-deepSpace-card transition-colors"
+                className="p-1 rounded hover:bg-deepSpace-card transition-colors flex-shrink-0"
               >
                 <X className="w-4 h-4 text-text-muted hover:text-text-primary" />
               </button>
